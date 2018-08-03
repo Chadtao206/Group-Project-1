@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ"
+        crossorigin="anonymous">
+    <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=MedievalSharp" rel="stylesheet">
+    <title>Yelp API Call</title>
+</head>
+
+<body>
+    <div class="container">
+        <br><br>
+    <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Search Business Here" aria-label="Recipient's username" aria-describedby="basic-addon2">
+        <div class="input-group-append">
+          <span class="btn btn-primary" id="submit">Search</span>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+
+    $("#submit").on("click", function(){
+        event.preventDefault();
+        var apiKey = "1bcf7dd2c40009d8924547e40480bb0c";
+        var term = $(this).val().trim();
+        var searchURL = "https://developers.zomato.com/api/v2.1/search?q="+term;
+        var restaurant = [];
+        $.ajax({
+            url:searchURL,
+            method:"GET",
+            headers:{"user-key":apiKey}
+        }).then(function(response){
+            console.log(response);
+            for (i=0;i<20;i++){
+                var temp = {
+                    name: response.restaurants[i].restaurant.name,
+                    cuisine: response.restaurants[i].restaurant.cuisines,
+                    location: response.restaurants[i].restaurant.location,
+                    priceRange: response.restaurants[i].restaurant.price_range,
+                }
+                restaurant.push(temp);
+            }
+            console.log(restaurant);
+        })
+    })
+    </script>
+</body>
+
+</html>
