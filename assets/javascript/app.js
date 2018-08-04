@@ -21,6 +21,7 @@ $(document).ready(function () {
     //get 
     $(".submit").on("click", function () {
         if ($("#inputCategory option:selected").attr("value") && $(".input-location").val().trim()) {
+            //comment of some kind.
             var catID = $("#inputCategory option:selected").attr("value");
             var city = $(".input-location").val().trim();
             var cityID;
