@@ -6,13 +6,30 @@
 }*/
 
 body {
-    background-color: rgb(5, 103, 133) !important;   
+    background-image: url("../images/squared_metal_@2X.png");
+    /*background-color: rgb(205, 224, 230) !important;*/  
 }
 
 .container {
     font-family: 'Raleway', sans-serif;
 }
 
+.jumbotron {
+    background-image: url("../images/jumbotron.jpg");
+    background-size: cover;
+    height: 100%;
+    background-color:rgba(2, 19, 43, 0.705);
+    border-color: #ddd;
+    border-spacing: solid;
+    border: 1px solid;
+}
+
+.jumbotron, h1{
+    color: rgb(255, 60, 0);
+    text-align: center;
+    font-family: 'Vast Shadow', cursive;
+    font-size: 50px !important;
+}
 img {
     height: 50%;
     width: 50%;
@@ -138,7 +155,8 @@ h4 {
     bottom: 20px;
 }
 p {
-    font-size: 25px;
+    color: rgb(255, 60, 0);
+    font-size: 30px;
     font-weight: 500 !important;
 }
 .srcImg {
@@ -169,4 +187,3 @@ p {
   @media screen and (max-width: 330px) {
     h1,h3 { display: none; }   /* hide it elsewhere */
  }
-
