@@ -48,8 +48,8 @@ $(document).ready(function () {
         resultStart = 0;
         var searchInput = $(".input-location").val().trim();
         if (searchInput) {
+            catID = $("#inputCategory option:selected").attr("value");
             if (isNaN(searchInput)) {
-                catID = $("#inputCategory option:selected").attr("value");
                 city = searchInput;
                 citySearch = true;
                 cityIdQuery();
@@ -62,7 +62,6 @@ $(document).ready(function () {
                     }).then(function (results) {
                         searchLat = results.item.Latitude;
                         searchLon = results.item.Longitude;
-                        searchURL = "https://developers.zomato.com/api/v2.1/search?start=" + resultStart + "&count=" + resultShow + "&lat=" + searchLat + "&lon=" + searchLon + "&sort=rating&order=desc";
                         citySearch = false;
                         searchCity();
                     })
@@ -77,7 +76,8 @@ $(document).ready(function () {
                 if (citySearch){
                     searchURL = "https://developers.zomato.com/api/v2.1/search?start=" + resultStart + "&count=" + resultShow + "&entity_id=" + cityID + "&entity_type=city&category=" + catID + "&sort=rating&order=desc";
                 }else{
-                    searchURL = "https://developers.zomato.com/api/v2.1/search?start=" + resultStart + "&count=" + resultShow + "&lat=" + searchLat + "&lon=" + searchLon + "&sort=rating&order=desc";
+                    searchURL = "https://developers.zomato.com/api/v2.1/search?start=" + resultStart + "&count=" + resultShow + "&lat=" + searchLat + "&lon=" + searchLon + "&category=" + catID + "&sort=rating&order=desc";
+                console.log(searchURL);
                 }
                 restaurant = [];
                 displayNum = 10;
