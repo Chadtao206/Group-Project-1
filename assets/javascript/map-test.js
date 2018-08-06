@@ -1,6 +1,5 @@
 $("#map").hide();
 
-//$("#showMap").on("click", function(){
 var geocoder;
 var map;
 var places;
@@ -12,11 +11,11 @@ function initialize() {
     // set some default map details, initial center point, zoom and style
     var mapOptions = {
         center: new google.maps.LatLng(33.6846, -117.8265),
-        zoom: 7,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
+        zoom: 10,
+        mapTyped: google.maps.MapTypeId.ROADMAP
     };
 
-    // create the map and reference the div#map-canvas container
+    // create the map and reference the div #map container
     map = new google.maps.Map(document.getElementById("map"), mapOptions);
     // fetch the existing places (ajax) 
     // and put them on the map
@@ -25,16 +24,12 @@ function initialize() {
 
 // when page is ready, initialize the map!
 google.maps.event.addDomListener(window, 'load', initialize);
-//  $("#map").show();
-//});
 
-// add location button event
-$("form").submit(function (e) {
-    // the name form field value
-    var name = $("#place_name").val();
+// add location button event - same button used for Zomato API
+$(".submit").on("click", function (e) {
 
     // get the location text field value
-    var loc = $("#location").val();
+    var loc = $(".input-location").val();
     console.log("user entered location = " + loc);
     geocoder.geocode({ 'address': loc }, function (results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
@@ -44,15 +39,6 @@ $("form").submit(function (e) {
 
             // reposition map to the first returned location
             map.setCenter(results[0].geometry.location);
-
-            // put marker on map
-            var marker = new google.maps.Marker({
-                map: map,
-                position: results[0].geometry.location
-            });
-            bindInfoWindow(marker, map, infowindow, places[p].name + "<br>" + places[p].geo_name);
-            // not currently used but good to keep track of markers
-            markers.push(marker);
 
             // preparing data for form posting
             var lat = results[0].geometry.location.lat();
@@ -74,7 +60,8 @@ $("form").submit(function (e) {
                 },
                 error: function (err) {
                     // do error checking
-                    alert("something went wrong");
+                    //alert("something went wrong");
+                    // Moved Markers to Zomato code, creating an error message with Google Maps API
                     console.error(err);
                 }
             });
