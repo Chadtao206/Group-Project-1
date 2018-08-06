@@ -130,6 +130,18 @@ $(document).ready(function () {
                     searchCity();  
                     }
                 })
+                // put marker on map FROM GOOGLE MAPS API
+                var infowindow = new google.maps.InfoWindow();
+                var marker, i;
+        
+                for (i = 0; i < restaurant.length; i++) {  
+                    marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(restaurant[i].location.latitude, restaurant[i].location.longitude),
+                    map: map
+                });
+            };
+                bindInfoWindow(marker, map, infowindow, places[p].name + "<br>" + places[p].geo_name);
+                markers.push(marker);
             }
 
 
