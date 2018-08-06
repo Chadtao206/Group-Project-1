@@ -1,13 +1,7 @@
 
-/*.carousel-item {
-    width: auto;
-    height: 300px;
-    max-height: 300px;
-}*/
-
 body {
     background-image: url("../images/squared_metal_@2X.png");
-    /*background-color: rgb(205, 224, 230) !important;*/  
+ 
 }
 
 .container {
@@ -35,12 +29,12 @@ img {
     width: 50%;
 }
 
-img:hover {
+/*img:hover {
     transform: scale(1.18);
     transition: all .8s ease;
-  }
+  }*/
   
-#myBtn {
+/*#myBtn {
     display: none; 
     position: fixed; 
     bottom: 20px; 
@@ -49,22 +43,16 @@ img:hover {
     border: none; 
     outline: none; 
     background-color:rgb(215, 30, 30);
-    color: white; 
     cursor: pointer; 
     padding: 15px; 
     border-radius: 10px; 
     font-size: 18px;
     
-}
+}*/
 
-#formInput, #formFood{
-    margin-top: 5px;
-    margin-bottom: 5px;
-}
-
-#myBtn:hover {
+/*#myBtn:hover {
     background-color:#fb6806;
-}
+}*/
 .imgMeta, .dataMeta{
     float: left;
 }
@@ -95,8 +83,6 @@ img {
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 
 }
-
-
 .btn-primary:hover {
     background-color: rgb(168, 49, 49) !important;
 }
@@ -112,16 +98,15 @@ td {
 }
 
 
-.content-row {
+/*.content-row {
     border: 1px solid #ced4da !important;
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
     border-radius: 10px !important;
     margin-bottom: 15px !important;
-}
+}*/
 
 h1  {
-    /* padding-right: 10%;
-    font-weight: 10%; */
+    color: rgb(255, 60, 0) !important;
     margin-left: 10%;
     font-size: 50px;
     font-weight: 900 !important;
@@ -152,6 +137,7 @@ h4 {
     font-size: 25px;
     font-weight: 900 !important;
     position: relative;
+    color: rgb(0, 0, 0) !important;
     bottom: 20px;
 }
 p {
