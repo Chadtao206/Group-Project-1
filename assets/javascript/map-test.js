@@ -91,4 +91,3 @@ var bindInfoWindow = function (marker, map, infowindow, html) {
         infowindow.open(map, marker);
     });
 }
-
