@@ -20,6 +20,7 @@ $(document).ready(function () {
     var map;
     var places;
     var markers = [];
+    var infoWindow;
 
     $("#map").hide();
 
@@ -31,15 +32,12 @@ $(document).ready(function () {
         // set some default map details, initial center point, zoom and style
         var mapOptions = {
             center: new google.maps.LatLng(33.6846, -117.8265),
-            zoom: 10,
+            zoom: 12,
             mapTyped: google.maps.MapTypeId.ROADMAP
         };
 
         // create the map and reference the div #map container
         map = new google.maps.Map(document.getElementById("map"), mapOptions);
-        // fetch the existing places (ajax) 
-        // and put them on the map
-        //    fetchPlaces();
     }
 
     // when page is ready, initialize the map!
@@ -191,7 +189,6 @@ $(document).ready(function () {
 
             // put marker on map FROM GOOGLE MAPS API
             //   var infowindow = new google.maps.InfoWindow();
-            //   var marker, i;
 
             //clears markers on map
             function clearMap() {
@@ -203,20 +200,22 @@ $(document).ready(function () {
 
             //sets markers for currently displayed restaurants on map
             clearMap();
+            infoWindow = new google.maps.InfoWindow();
             for (i = 0; i < restaurant.length; i++) {
                 var marker = new google.maps.Marker({
                     position: new google.maps.LatLng(restaurant[i].location.latitude, restaurant[i].location.longitude),
                     map: map,
                 });
                 markers.push(marker);
+                google.maps.event.addListener(marker, 'click', (function(marker, i) {
+                    return function() {
+                        infoWindow.setContent('<div style="color: black"><strong>' + restaurant[i].name + '</strong><br>' + restaurant[i].location.address + '<br>' + '</div>');
+                        infoWindow.setOptions({maxWidth: 500});
+                        infoWindow.open(map, marker);
+                    }
+                }) (marker, i));  
             };
-            console.log(markers);
-            //     console.log(places);
-            //    bindInfoWindow(marker, map, infowindow, places[p].name + "<br>" + places[p].geo_name);
-            //   markers.push(marker);
         };
-
-
 
         //city ID query
         function cityIdQuery() {
@@ -246,44 +245,12 @@ $(document).ready(function () {
     })
 })
 
-// fetch Places JSON from /data/places
-// loop through and populate the map with markers
-var fetchPlaces = function () {
-    var infowindow = new google.maps.InfoWindow({
-        content: ''
-    });
-    $.ajax({
-        url: '/data/places',
-        dataType: 'json',
-        success: function (response) {
-            console.log(response);
-            if (response.status == 'OK') {
-                places = response.places;
-                // loop through places and add markers
-                for (p in places) {
-                    //create gmap latlng obj
-                    tmpLatLng = new google.maps.LatLng(places[p].geo[0], places[p].geo[1]);
-                    // make and place map maker.
-                    var marker = new google.maps.Marker({
-                        map: map,
-                        position: tmpLatLng,
-                        title: places[p].name + "<br>" + places[p].geo_name
-                    });
-                    bindInfoWindow(marker, map, infowindow, '<b>' + places[p].name + "</b><br>" + places[p].geo_name);
-                    // not currently used but good to keep track of markers
-                    markers.push(marker);
-                }
-            }
-        }
-    })
-};
-
-var bindInfoWindow = function (marker, map, infowindow, html) {
-    google.maps.event.addListener(marker, 'click', function () {
-        infowindow.setContent(html);
-        infowindow.open(map, marker);
-    });
-}
+//var bindInfoWindow = function (marker, map, infowindow, html) {
+//    google.maps.event.addListener(marker, 'click', function () {
+//        infowindow.setContent(html);
+//        infowindow.open(map, marker);
+//    });
+//}
 
 function topFunction() {
     var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || safari.pushNotification);
