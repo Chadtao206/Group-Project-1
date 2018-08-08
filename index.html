@@ -26,43 +26,53 @@
 </head>
 
 <body>
-
-
     <!--Input area of the page-->
     <div class="container">
-        <div class="jumbotron">
-            <h1>
-                <span class="glyphicon glyphicon-foodie"></span> HYelp
-                <span class="glyphicon glyphicon-foodie"></span>
-            </h1>
-            <p>The Better Yelp Alternative</p>
-        </div>
-        <!--Zomato Search Bar-->
-        <div class="row form-group" style="margin-left:25px;">
-            <select style="width:40%;height:62px;font-size:30px;" id='inputCategory' class='form-control'>
-                <option value='' selected>What are you craving?</option>
-                <input style="height:62px;font-size:30px;float:left;width:50%" type="text" class="form-control input-location" placeholder="Find Near City or U.S. Zip Code">
-                <button class="btn btn-outline-primary btn-lg shadow-sm submit" style="border-radius:10px;">
-                    <i class="fab fa-searchengin fa-2x rounded"></i>
-                </button>
-        </div>
-        <!--End of Zomato Search Bar-->
+        <!--SignIn and SignOut Buttons-->
+        <div class="container">
+            <div>
+                <ul class="nav justify-content-end">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index-1.html">Sign-In</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index-1.html">Sign-Up</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="jumbotron">
+                <h1>
+                    <span class="glyphicon glyphicon-foodie"></span> HYelp
+                    <span class="glyphicon glyphicon-foodie"></span>
+                </h1>
+                <p>The Better Yelp Alternative</p>
+            </div>
+            <!--Zomato Search Bar-->
+            <div class="row form-group" style="margin-left:25px;">
+                <select style="width:40%;height:62px;font-size:30px;" id='inputCategory' class='form-control'>
+                    <option value='' selected>What are you craving?</option>
+                    <input style="height:62px;font-size:30px;float:left;width:50%" type="text" class="form-control input-location" placeholder="Find Near City or U.S. Zip Code">
+                    <button class="btn btn-outline-primary btn-lg shadow-sm submit" style="border-radius:10px;">
+                        <i class="fab fa-searchengin fa-2x rounded"></i>
+                    </button>
+            </div>
+            <!--End of Zomato Search Bar-->
 
-        <!--Div that holds our search results-->
-        <div class="searchresults row" style="width:100%;margin:auto;justify-content: center;">
+            <!--Div that holds our search results-->
+            <div class="searchresults row" style="width:100%;margin:auto;justify-content: center;">
+            </div>
+            <div class="nextbutton row"></div>
+            <!--Div that holds our map-->
+            <br>
+            <br>
+            <br>
+            <div class="gmapresults">
+                <div id="map" style="width:100%;height:500px;background:yellow"></div>
+            </div>
+            <!--Button that will let user scroll to top-->
+            <button onclick="topFunction()" style="visibility:hidden;" id="myBtn" title="Go to top">Top</button>
         </div>
-        <div class="nextbutton row"></div>
-        <!--Div that holds our map-->
-        <br>
-        <br>
-        <br>
-        <div class="gmapresults">
-            <div id="map" style="width:100%;height:500px;background:yellow"></div>
-        </div>
-        <!--Button that will let user scroll to top-->
-        <button onclick="topFunction()" style="visibility:hidden;" id="myBtn" title="Go to top">Top</button>
-    </div>
-    <!-- End Container -->
+        <!-- End Container -->
 </body>
 
 </html>
