@@ -164,6 +164,7 @@ $(document).ready(function () {
                 }
             });
 
+            //rating display algorithm
             var ratingDisp = {
                 avg: [],
                 stars: [],
@@ -171,9 +172,11 @@ $(document).ready(function () {
                 empty: [],
             }
 
+            var dollarDiv = [];
             var starDiv = [];
 
-            //font awesome star icons
+            //font awesome star and dollar icons
+            var dollar = "<i class='fab fa-bitcoin'></i>";
             var fullStar = "<i class='fas fa-star'></i>";
             var emptyStar = "<i class='far fa-star'></i>";
             var halfStar = "<i class='fas fa-star-half-alt'></i>";
@@ -213,6 +216,14 @@ $(document).ready(function () {
                 starDiv.push(temp);
             }
 
+            //create price dollar divs
+            for (i = 0; i < restaurant.length; i++) {
+                var temp = $("<div></div>");
+                for (j = 0; j < restaurant[i].priceRange; j++) {
+                    temp.append(dollar);
+                }
+                dollarDiv.push(temp);
+            }
 
             //Adds Cards with thumbnails and displays the current page of 10 restaurants
             for (i = 0; i < restaurant.length; i++) {
@@ -221,7 +232,7 @@ $(document).ready(function () {
                 } else {
                     thumb = "assets/images/placehold.jpg"
                 }
-                $(".searchresults").append("<div class='card' style='width: 12rem;'><img class='card-img-top' src='" + thumb + "' alt='Card image cap'><div class='card-body'><h5 class='card-title' style='height:50px;overflow:hidden;'>" + restaurant[i].name + "</h5>" + restaurant[i].rating.aggregate_rating + "&nbsp;&nbsp;" + starDiv[i][0].innerHTML + "<p class='card-text' style='margin-top:10px;font-size:12px;height:60px;'>" + restaurant[i].location.address + "</p><a target='_blank' href='" + restaurant[i].link + "' class='btn btn-primary' style='margin-left:15px;'>Zomato Page</a></div></div>");
+                $(".searchresults").append("<div class='card' style='width: 12rem;'><img class='card-img-top' src='" + thumb + "' alt='Card image cap'><div class='card-body'><h5 class='card-title' style='text-align:center;height:50px;overflow:hidden;'>" + restaurant[i].name + "</h5><span>Price - " + dollarDiv[i][0].innerHTML +"</span><br><div style='margin-top:10px;'>"+ restaurant[i].rating.aggregate_rating + "&nbsp;&nbsp;" + starDiv[i][0].innerHTML + "</div><p class='card-text' style='margin-top:10px;font-size:12px;height:60px;'>" + restaurant[i].location.address + "</p><a target='_blank' href='" + restaurant[i].link + "' class='btn btn-primary' style='margin-left:15px;'>Zomato Page</a></div></div>");
             }
             $(".nextbutton").html("<button class='btn btn-outline-primary btn-lg shadow-sm previous' style='margin:auto;margin-top:30px;'>Previous Page</button><h4 style='margin:auto;margin-top:60px;'>Page " + parseInt(resultStart / 10 + 1) + " of " + pages + "</h4><button class='btn btn-outline-primary btn-lg shadow-sm next' style='margin:auto;margin-top:30px;'>Next Page</button>");
             $(".next").on("click", function () {
@@ -260,7 +271,7 @@ $(document).ready(function () {
                 markers.push(marker);
                 google.maps.event.addListener(marker, 'click', (function (marker, i) {
                     return function () {
-                        infoWindow.setContent("<div style='color: black'><strong>" + restaurant[i].name + "</strong><hr><span>Rating: " + restaurant[i].rating.aggregate_rating + "</span>&nbsp;&nbsp;&nbsp;<span>" + starDiv[i][0].innerHTML + "</span>&nbsp;&nbsp;&nbsp;<span>" + restaurant[i].rating.votes + " Reviews</span><br><div style='margin-top:10px;'>" + restaurant[i].location.address + '</div><br>' + '</div>');
+                        infoWindow.setContent("<div style='color: black'><strong>" + restaurant[i].name +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+ dollarDiv[i][0].innerHTML+ "</strong><hr><span>Rating: " + restaurant[i].rating.aggregate_rating + "</span>&nbsp;&nbsp;&nbsp;<span>" + starDiv[i][0].innerHTML + "</span>&nbsp;&nbsp;&nbsp;<span>" + restaurant[i].rating.votes + " Reviews</span><br><div style='margin-top:10px;'>" + restaurant[i].location.address + '</div><br>' + '</div>');
                         infoWindow.setOptions({ maxWidth: 500 });
                         infoWindow.open(map, marker);
                     }
