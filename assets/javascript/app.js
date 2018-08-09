@@ -32,7 +32,7 @@ $(document).ready(function () {
         // set some default map details, initial center point, zoom and style
         var mapOptions = {
             center: new google.maps.LatLng(33.6846, -117.8265),
-            zoom: 12,
+            zoom: 10,
             mapTyped: google.maps.MapTypeId.ROADMAP
         };
 
@@ -66,7 +66,6 @@ $(document).ready(function () {
         }
     })
 
-
     //submit click function
     $(".submit").on("click", function () {
         resultStart = 0;
@@ -79,11 +78,12 @@ $(document).ready(function () {
                 cityIdQuery();
             } else {
                 if ((searchInput.toString().length === 5) && (parseInt(searchInput) < 99951) && (parseInt(searchInput) > 500)) {
-                    var zipURL = "https://api.zip-codes.com/ZipCodesAPI.svc/1.0/GetZipCodeDetails/" + searchInput + "?key=7MJP0RQFAUSHKPB16Q3B";
+                    var zipURL = "https://api.zip-codes.com/ZipCodesAPI.svc/1.0/GetZipCodeDetails/" + searchInput + "?key=3932FDORZQE6FVW1VJ1Q";
                     $.ajax({
                         url: zipURL,
                         method: "GET",
                     }).then(function (results) {
+                        console.log(results)
                         searchLat = results.item.Latitude;
                         searchLon = results.item.Longitude;
                         citySearch = false;
@@ -111,7 +111,7 @@ $(document).ready(function () {
             }).then(function (response) {
                 console.log(response);
                 pages = Math.ceil(response.results_found / 10);
-                if (pages>10){pages=10};
+                if (pages > 10) { pages = 10 };
                 if (response.results_shown < 11) {
                     displayNum = response.results_shown;
                 }
@@ -125,6 +125,7 @@ $(document).ready(function () {
                         link: response.restaurants[i].restaurant.url,
                         menu: response.restaurants[i].restaurant.menu_url,
                         photos: response.restaurants[i].restaurant.photos_url,
+                        rating: response.restaurants[i].restaurant.user_rating,
                     }
                     restaurant.push(temp);
                 }
@@ -163,6 +164,56 @@ $(document).ready(function () {
                 }
             });
 
+            var ratingDisp = {
+                avg: [],
+                stars: [],
+                half: [],
+                empty: [],
+            }
+
+            var starDiv = [];
+
+            //font awesome star icons
+            var fullStar = "<i class='fas fa-star'></i>";
+            var emptyStar = "<i class='far fa-star'></i>";
+            var halfStar = "<i class='fas fa-star-half-alt'></i>";
+
+            //create rating star divs
+            for (i = 0; i < restaurant.length; i++) {
+                var temp = Math.floor(restaurant[i].rating.aggregate_rating);
+                var temp2 = restaurant[i].rating.aggregate_rating - temp;
+                var half;
+                var empty = 5 - temp;
+                if (temp2 > 0.71) {
+                    temp++;
+                    half = false;
+                    empty--;
+                } else if (temp2 < 0.29) {
+                    half = false;
+                } else {
+                    half = true;
+                    empty--;
+                }
+                ratingDisp.avg.push(restaurant[i].rating.aggregate_rating);
+                ratingDisp.stars.push(temp);
+                ratingDisp.half.push(half);
+                ratingDisp.empty.push(empty);
+            }
+            for (i = 0; i < restaurant.length; i++) {
+                var temp = $("<div></div>");
+                for (j = 0; j < ratingDisp.stars[i]; j++) {
+                    temp.append(fullStar);
+                }
+                if (ratingDisp.half[i]) {
+                    temp.append(halfStar);
+                }
+                for (j = 0; j < ratingDisp.empty[i]; j++) {
+                    temp.append(emptyStar);
+                }
+                starDiv.push(temp);
+            }
+
+
             //Adds Cards with thumbnails and displays the current page of 10 restaurants
             for (i = 0; i < restaurant.length; i++) {
                 if (restaurant[i].thumbnail) {
@@ -170,14 +221,14 @@ $(document).ready(function () {
                 } else {
                     thumb = "assets/images/placehold.jpg"
                 }
-                $(".searchresults").append("<div class='card' style='width: 12rem;'><img class='card-img-top' src='" + thumb + "' alt='Card image cap'><div class='card-body'><h5 class='card-title' style='height:50px;overflow:hidden;'>" + restaurant[i].name + "</h5><p class='card-text' style='font-size:12px;height:60px;'>" + restaurant[i].location.address + "</p><a target='_blank' href='" + restaurant[i].link + "' class='btn btn-primary' style='margin-left:15px;'>Zomato Page</a></div></div>");
+                $(".searchresults").append("<div class='card' style='width: 12rem;'><img class='card-img-top' src='" + thumb + "' alt='Card image cap'><div class='card-body'><h5 class='card-title' style='height:50px;overflow:hidden;'>" + restaurant[i].name + "</h5>" + restaurant[i].rating.aggregate_rating + "&nbsp;&nbsp;" + starDiv[i][0].innerHTML + "<p class='card-text' style='margin-top:10px;font-size:12px;height:60px;'>" + restaurant[i].location.address + "</p><a target='_blank' href='" + restaurant[i].link + "' class='btn btn-primary' style='margin-left:15px;'>Zomato Page</a></div></div>");
             }
             $(".nextbutton").html("<button class='btn btn-outline-primary btn-lg shadow-sm previous' style='margin:auto;margin-top:30px;'>Previous Page</button><h4 style='margin:auto;margin-top:60px;'>Page " + parseInt(resultStart / 10 + 1) + " of " + pages + "</h4><button class='btn btn-outline-primary btn-lg shadow-sm next' style='margin:auto;margin-top:30px;'>Next Page</button>");
             $(".next").on("click", function () {
                 console.log(pages)
-                if (resultStart <= (pages-2)*10){
-                resultStart += 10;
-                searchCity();
+                if (resultStart <= (pages - 2) * 10) {
+                    resultStart += 10;
+                    searchCity();
                 }
             })
             $(".previous").on("click", function () {
@@ -187,8 +238,8 @@ $(document).ready(function () {
                 }
             })
 
+
             // put marker on map FROM GOOGLE MAPS API
-            //   var infowindow = new google.maps.InfoWindow();
 
             //clears markers on map
             function clearMap() {
@@ -207,13 +258,13 @@ $(document).ready(function () {
                     map: map,
                 });
                 markers.push(marker);
-                google.maps.event.addListener(marker, 'click', (function(marker, i) {
-                    return function() {
-                        infoWindow.setContent('<div style="color: black"><strong>' + restaurant[i].name + '</strong><br>' + restaurant[i].location.address + '<br>' + '</div>');
-                        infoWindow.setOptions({maxWidth: 500});
+                google.maps.event.addListener(marker, 'click', (function (marker, i) {
+                    return function () {
+                        infoWindow.setContent("<div style='color: black'><strong>" + restaurant[i].name + "</strong><hr><span>Rating: " + restaurant[i].rating.aggregate_rating + "</span>&nbsp;&nbsp;&nbsp;<span>" + starDiv[i][0].innerHTML + "</span>&nbsp;&nbsp;&nbsp;<span>" + restaurant[i].rating.votes + " Reviews</span><br><div style='margin-top:10px;'>" + restaurant[i].location.address + '</div><br>' + '</div>');
+                        infoWindow.setOptions({ maxWidth: 500 });
                         infoWindow.open(map, marker);
                     }
-                }) (marker, i));  
+                })(marker, i));
             };
         };
 
@@ -244,13 +295,6 @@ $(document).ready(function () {
         //end of city ID query
     })
 })
-
-//var bindInfoWindow = function (marker, map, infowindow, html) {
-//    google.maps.event.addListener(marker, 'click', function () {
-//        infowindow.setContent(html);
-//        infowindow.open(map, marker);
-//    });
-//}
 
 function topFunction() {
     var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || safari.pushNotification);
