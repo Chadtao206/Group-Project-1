@@ -24,6 +24,77 @@ $(document).ready(function () {
 
     $("#map").hide();
 
+  // Configure Firebase
+  var config = {
+    apiKey: "AIzaSyBNrkLJnuk0Vbz0xyNdNkjPjc_uQsKebPQ",
+    authDomain: "hyelp-1533266960440.firebaseapp.com",
+    databaseURL: "https://hyelp-1533266960440.firebaseio.com",
+    projectId: "hyelp-1533266960440",
+    storageBucket: "",
+    messagingSenderId: "1028833344633"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(config);
+  const txtEmail = document.getElementById('txtEmail');
+  const txtPassword = document.getElementById('txtPassword');
+  const btnLogin = document.getElementById("btnLogin");
+  const btnSignUp = document.getElementById("btnSignUp");
+  const btnLogout= document.getElementById("btnLogout");
+
+  //add login event
+  btnLogin.addEventListener('click', e => {
+      //get email and password
+      const email = txtEmail.value;
+      const password = txtPassword.value;
+      const auth = firebase.auth();
+      //sign in
+      auth.signInWithEmailAndPassword(email, password);
+      promise.catch(e => console.log(e.message));
+  })
+
+  //add signup event
+  btnSignUp.addEventListener('click', e => {
+    //get email and password
+    
+    const email = txtEmail.value;
+    const password = txtPassword.value;
+    const auth = firebase.auth();
+    //sign in
+    auth.createUserWithEmailAndPassword(email, password);
+    promise.catch(e => console.log(e.message));
+
+  })
+ 
+    //add a realtime listener
+    firebase.auth().onAuthStateChanged(firebaseUser => {
+        if(firebaseUser){
+            console.log(firebaseUser);
+           
+        } else{
+            console.log('not logged in');
+            
+        }
+    })
+
+    //allow user to logout
+    btnLogout.addEventListener('click', e => {
+        firebase.auth().signOut();
+    });
+  // declare auth database
+  const auth = firebase.auth();
+    //signs in existing user and a promise where you can resolve that user
+  auth.signInWithEmailAndPassword(email, pass);
+    //create an account.
+  auth.createUserWithEmailAndPassword(email, pass);
+    //monitor authentication state
+  auth.onAuthStateChanged(firebaseUser => {});
+
+  
+
+
+
+
+
 
     function initialize() {
         // create the geocoder
