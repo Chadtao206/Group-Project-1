@@ -35,33 +35,48 @@ $(document).ready(function () {
   };
   // Initialize Firebase
   firebase.initializeApp(config);
-  const txtEmail = document.getElementById('txtEmail');
-  const txtPassword = document.getElementById('txtPassword');
-  const btnLogin = document.getElementById("btnLogin");
-  const btnSignUp = document.getElementById("btnSignUp");
-  const btnLogout= document.getElementById("btnLogout");
-
+  const txtEmail = $("#txtEmail");
+  const txtPassword = $("#txtPassword");
+  const btnLogin = $("#btnLogin");
+  const btnSignUp = $("#btnSignUp");
+  const btnLogout= $("#btnLogout");
+  
   //add login event
-  btnLogin.addEventListener('click', e => {
+    $(document).on("click", "#btnLogin", function () {
       //get email and password
-      const email = txtEmail.value;
-      const password = txtPassword.value;
+      console.log(txtEmail);
+      const email = $("#txtEmail").val().trim();
+      const password = $("#txtPassword").val().trim();
       const auth = firebase.auth();
       //sign in
       auth.signInWithEmailAndPassword(email, password);
       promise.catch(e => console.log(e.message));
-  })
+  })  
+
+
+  
 
   //add signup event
-  btnSignUp.addEventListener('click', e => {
+  $(document).on("click", "#btnSignUp", function () {
     //get email and password
     
-    const email = txtEmail.value;
-    const password = txtPassword.value;
+    const email = $("#txtEmail").val().trim();
+    const password = $("#txtPassword").val().trim();
     const auth = firebase.auth();
-    //sign in
-    auth.createUserWithEmailAndPassword(email, password);
-    promise.catch(e => console.log(e.message));
+    if (firebase.auth().currentUser != null) {
+        firebase.auth().currentUser.updateProfile({
+            displayName:$("#txtUser").val().trim(),
+        })
+        }
+        
+    //sign up
+    auth.createUserWithEmailAndPassword(email, password).catch(e => {
+        console.log(e.message);
+        var pwplacehold = e.message;
+        console.log(pwplacehold);
+        $("#txtPassword").attr("placeholder", pwplacehold);
+    });
+    
 
   })
  
@@ -77,18 +92,18 @@ $(document).ready(function () {
     })
 
     //allow user to logout
-    btnLogout.addEventListener('click', e => {
+    btnLogout.on("click", function() {
         firebase.auth().signOut();
     });
   // declare auth database
-  const auth = firebase.auth();
+ // const auth = firebase.auth();
     //signs in existing user and a promise where you can resolve that user
-  auth.signInWithEmailAndPassword(email, pass);
+ // auth.signInWithEmailAndPassword(email, pass);
     //create an account.
-  auth.createUserWithEmailAndPassword(email, pass);
+ // auth.createUserWithEmailAndPassword(email, pass);
     //monitor authentication state
-  auth.onAuthStateChanged(firebaseUser => {});
-
+ // auth.onAuthStateChanged(firebaseUser => {});
+  
   
 
 
