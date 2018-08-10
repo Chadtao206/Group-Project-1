@@ -227,29 +227,6 @@ $(document).ready(function () {
             $("#map").show();
             $("#myBtn").css("visibility", "visible");
 
-            //generate map function
-            // get the location text field value
-            var loc = restaurant[0].location.address;
-            console.log("user entered location = " + loc);
-            geocoder.geocode({ 'address': loc }, function (results, status) {
-                if (status == google.maps.GeocoderStatus.OK) {
-                    // log out results from geocoding
-                    console.log("geocoding results");
-                    console.log(results);
-
-                    // reposition map to the first returned location
-                    map.setCenter(results[0].geometry.location);
-
-                    // preparing data for form posting
-                    var lat = results[0].geometry.location.lat();
-                    var lng = results[0].geometry.location.lng();
-                    var loc_name = results[0].formatted_address;
-                    console.log(lat);
-                    console.log(lng);
-                    console.log(loc_name);
-                }
-            });
-
             //rating display algorithm
             var ratingDisp = {
                 avg: [],
@@ -347,7 +324,9 @@ $(document).ready(function () {
             }
 
             //sets markers for currently displayed restaurants on map
+            //sets markers for currently displayed restaurants on map
             clearMap();
+            var bounds = new google.maps.LatLngBounds();
             infoWindow = new google.maps.InfoWindow();
             for (i = 0; i < restaurant.length; i++) {
                 var marker = new google.maps.Marker({
@@ -355,6 +334,7 @@ $(document).ready(function () {
                     map: map,
                 });
                 markers.push(marker);
+                bounds.extend(marker.position);
                 google.maps.event.addListener(marker, 'click', (function (marker, i) {
                     return function () {
                         infoWindow.setContent("<div style='color: black'><strong>" + restaurant[i].name +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+ dollarDiv[i][0].innerHTML+ "</strong><hr><span>Rating: " + restaurant[i].rating.aggregate_rating + "</span>&nbsp;&nbsp;&nbsp;<span>" + starDiv[i][0].innerHTML + "</span>&nbsp;&nbsp;&nbsp;<span>" + restaurant[i].rating.votes + " Reviews</span><br><div style='margin-top:10px;'>" + restaurant[i].location.address + '</div><br>' + '</div>');
@@ -363,6 +343,7 @@ $(document).ready(function () {
                     }
                 })(marker, i));
             };
+            map.fitBounds(bounds);
         };
 
         //city ID query
