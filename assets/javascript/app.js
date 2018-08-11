@@ -44,7 +44,7 @@ $(document).ready(function () {
         $(".sign-up-box").addClass("col-lg-3");
         $(".sign-up-box").css("width","100%");
         $(".sign-up-box").css("height","275px");
-        $(".sign-up-box").html('<div class="container"><div><ul class="nav justify-content-end"><li class="nav-item"></li></ul></div><div class="row"><div class="col-lg-12"><form><div class="form-group"><input id="txtEmail" type="email" class="form-control" placeholder="Enter E-Mail"></div></form></div></div><div class="row"><div class="col-lg-12"><form><div class="form-group"><input id="txtPassword" type="password" class="form-control" placeholder="Password"></div></form></div></div><div class="row pwRow"></div><div class="row"><div class="col-lg-6"><button id="btnLogin" type="submit" class="btn btn-primary form-control">Login</button></div><div class="col-lg-6"><button id="btnCancel" type="submit" class="btn btn-primary form-control">Cancel</button></div></div></div>')
+        $(".sign-up-box").html('<div class="container"><div><ul class="nav justify-content-end"><li class="nav-item"></li></ul></div><div class="row"><div class="col-lg-12"><form><div class="form-group"><input id="txtEmail" type="email" class="form-control" placeholder="Enter E-Mail"></div></form></div></div><div class="row"><div class="col-lg-12"><form><div class="form-group"><input id="txtPassword" type="password" class="form-control" placeholder="Password"></div></form></div></div><div class="row pwRow"></div><div class="row"><div class="col-lg-6"><button id="btnLogin" type="submit" class="btn btn-primary form-control">Login</button></div><div class="col-lg-6"><button id="btnCancel" type="submit" class="btn btn-primary form-control">Cancel</button></div></div></div><br><div class="col-lg-12"><button id="passReset" type="submit" class="btn btn-primary form-control">Forget Password?</button></div></div>')
     })
 
     $(document).on("click", ".sign-up", function(){
@@ -70,6 +70,22 @@ $(document).ready(function () {
             $(".pwRow").html("<h7 style='color:black;padding:0 0 10px 20px;'>" + e.message + "</h7>");
         });
     })
+
+    //forgot password
+    $(document).on("click", "#passReset", function () {
+        $("#txtPassword").parent().empty();
+        $("#btnLogin").text("Submit").attr("id", "reset");
+    $("#reset").on("click", function() {
+        firebase.auth().sendPasswordResetEmail($("#txtEmail").val().trim()).then(function() {
+            console.log("email sent succesfully");
+            $(".pwRow").html("<h7 style='color:black;padding:0 0 10px 20px;'>Your email was successfully sent</h7>");
+          }).catch(function(error) {
+            console.log("email wasn't sent");
+            $(".pwRow").html("<h7 style='color:black;padding:0 0 10px 20px;'>" + error + "</h7>");
+          });
+        })    
+    })
+
 
 
     //add signup event
