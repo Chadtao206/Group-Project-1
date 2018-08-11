@@ -158,3 +158,18 @@ p {
   @media screen and (max-width: 330px) {
     h1,h3 { display: none; }   /* hide it elsewhere */
  }
+
+ .card-body {
+     padding-top: 0 !important;
+     overflow:hidden;
+ }
+ .fa-heart {
+     color:red;
+     position:relative;
+     bottom:40px;
+     left:5px;
+     cursor: pointer;
+     font-size:30px;
+     overflow:hidden;
+     
+ }

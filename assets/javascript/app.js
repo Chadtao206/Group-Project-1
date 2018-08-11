@@ -21,94 +21,132 @@ $(document).ready(function () {
     var places;
     var markers = [];
     var infoWindow;
-
+    var signState = "";
+    var userObj;
     $("#map").hide();
 
-  // Configure Firebase
-  var config = {
-    apiKey: "AIzaSyBNrkLJnuk0Vbz0xyNdNkjPjc_uQsKebPQ",
-    authDomain: "hyelp-1533266960440.firebaseapp.com",
-    databaseURL: "https://hyelp-1533266960440.firebaseio.com",
-    projectId: "hyelp-1533266960440",
-    storageBucket: "",
-    messagingSenderId: "1028833344633"
-  };
-  // Initialize Firebase
-  firebase.initializeApp(config);
-  const txtEmail = $("#txtEmail");
-  const txtPassword = $("#txtPassword");
-  const btnLogin = $("#btnLogin");
-  const btnSignUp = $("#btnSignUp");
-  const btnLogout= $("#btnLogout");
-  
-  //add login event
+    // Configure Firebase
+    var config = {
+        apiKey: "AIzaSyBNrkLJnuk0Vbz0xyNdNkjPjc_uQsKebPQ",
+        authDomain: "hyelp-1533266960440.firebaseapp.com",
+        databaseURL: "https://hyelp-1533266960440.firebaseio.com",
+        projectId: "hyelp-1533266960440",
+        storageBucket: "",
+        messagingSenderId: "1028833344633"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(config);
+
+    //login signup buttons
+    $(document).on("click", ".sign-in", function(){
+        $(".jumbotron").removeClass("col-lg-12").addClass("col-lg-8");
+        $(".sign-up-box").addClass("col-lg-3");
+        $(".sign-up-box").css("width","100%");
+        $(".sign-up-box").css("height","275px");
+        $(".sign-up-box").html('<div class="container"><div><ul class="nav justify-content-end"><li class="nav-item"></li></ul></div><div class="row"><div class="col-lg-12"><form><div class="form-group"><input id="txtEmail" type="email" class="form-control" placeholder="Enter E-Mail"></div></form></div></div><div class="row"><div class="col-lg-12"><form><div class="form-group"><input id="txtPassword" type="password" class="form-control" placeholder="Password"></div></form></div></div><div class="row pwRow"></div><div class="row"><div class="col-lg-6"><button id="btnLogin" type="submit" class="btn btn-primary form-control">Login</button></div><div class="col-lg-6"><button id="btnCancel" type="submit" class="btn btn-primary form-control">Cancel</button></div></div></div>')
+    })
+
+    $(document).on("click", ".sign-up", function(){
+        $(".jumbotron").removeClass("col-lg-12").addClass("col-lg-8");
+        $(".sign-up-box").addClass("col-lg-3");
+        $(".sign-up-box").css("width","100%");
+        $(".sign-up-box").css("height","275px");
+        $(".sign-up-box").html('<div class="container"><div><ul class="nav justify-content-end"><li class="nav-item"></li></ul></div><div class="row"><div class="col-lg-12"><form><div class="form-group"><input id="txtUser" type="userName" class="form-control" placeholder="Enter User Name"></div></form></div></div><div class="row"><div class="col-lg-12"><form><div class="form-group"><input id="txtEmail" type="email" class="form-control" placeholder="Enter E-Mail"></div></form></div></div><div class="row"><div class="col-lg-12"><form><div class="form-group"><input id="txtPassword" type="password" class="form-control" placeholder="Password"></div></form></div></div><div class="row pwRow"></div><div class="row"><div class="col-lg-6"><button id="btnSignUp" type="submit" class="btn btn-primary form-control">Sign-Up</button></div><div class="col-lg-6"><button id="btnCancel" type="submit" class="btn btn-primary form-control">Cancel</button></div></div></div>')
+    })
+
+    //add login event
     $(document).on("click", "#btnLogin", function () {
-      //get email and password
-      console.log(txtEmail);
-      const email = $("#txtEmail").val().trim();
-      const password = $("#txtPassword").val().trim();
-      const auth = firebase.auth();
-      //sign in
-      auth.signInWithEmailAndPassword(email, password);
-      promise.catch(e => console.log(e.message));
-  })  
+        event.preventDefault();
+        signState = "signIn";
+        //get email and password
+        $(".pwRow").empty();
+        const email = $("#txtEmail").val().trim();
+        const password = $("#txtPassword").val().trim();
+        const auth = firebase.auth();
+        //sign in
+        auth.signInWithEmailAndPassword(email, password).catch(e => {
+            console.log(e.message);
+            $(".pwRow").html("<h7 style='color:black;padding:0 0 10px 20px;'>" + e.message + "</h7>");
+        });
+    })
 
 
-  
-
-  //add signup event
-  $(document).on("click", "#btnSignUp", function () {
-    //get email and password
-    
-    const email = $("#txtEmail").val().trim();
-    const password = $("#txtPassword").val().trim();
-    const auth = firebase.auth();
-    if (firebase.auth().currentUser != null) {
-        firebase.auth().currentUser.updateProfile({
-            displayName:$("#txtUser").val().trim(),
-        })
+    //add signup event
+    $(document).keyup(function (event) {
+        event.preventDefault();
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            if (signState === "signIn") {
+                if (($("#txtEmail").val().trim()) && ($("#txtPassword").val().trim())) {
+                    $("#btnLogin").click();
+                }
+            } else if (signState === "signUp") {
+                if (($("#txtEmail").val().trim()) && ($("#txtPassword").val().trim()) && ($("#txtUser").val().trim()))
+                    $("#btnSignUp").click();
+            }
         }
-        
-    //sign up
-    auth.createUserWithEmailAndPassword(email, password).catch(e => {
-        console.log(e.message);
-        var pwplacehold = e.message;
-        console.log(pwplacehold);
-        $("#txtPassword").attr("placeholder", pwplacehold);
-    });
-    
+    })
 
-  })
- 
+    $(document).on("click", "#btnSignUp", function () {
+        event.preventDefault();
+        //get email and password
+        $(".pwRow").empty();
+        const email = $("#txtEmail").val().trim();
+        const password = $("#txtPassword").val().trim();
+        const auth = firebase.auth();
+
+        //sign up
+        auth.createUserWithEmailAndPassword(email, password).catch(e => {
+            console.log(e.message);
+            $(".pwRow").html("<h7 style='color:black;padding:0 0 10px 20px;'>" + e.message + "</h7>");
+        }).then(function () {
+            if (firebase.auth().currentUser != null) {
+                firebase.auth().currentUser.updateProfile({
+                    displayName: $("#txtUser").val().trim(),
+                })
+                $(".pwRow").html("<h7 style='color:black;padding:0 0 10px 20px;'>Account Created!</h7>");
+                setTimeout(clickCancel, 2000);
+            }
+        })
+    })
+
+    $(document).on("click", "#btnCancel", function () {
+        clickCancel();
+    })
+
+    function clickCancel() {
+        $(".sign-up-box").empty();
+        $(".sign-up-box").removeClass("col-lg-3");
+        $(".sign-up-box").css("width", "");
+        $(".sign-up-box").css("height", "");
+        $(".jumbotron").removeClass("col-lg-8").addClass("col-lg-12");
+    }
+
+    function signedIn() {
+        clickCancel();
+        $(".nav-one").html("<h3 class='welcome' style='color:black;margin-top:40px;padding-right:120px;width:100%;text-align:center;overflow:auto;'>Welcome "+userObj.displayName+"! How can we Hyelp you today?");
+        $(".nav-two").html("<a class='btn btn-lg btn-danger logOut' id='btnLogout'>Log Out</a>");
+    }
+
     //add a realtime listener
     firebase.auth().onAuthStateChanged(firebaseUser => {
-        if(firebaseUser){
-            console.log(firebaseUser);
-           
-        } else{
+        if (firebaseUser) {
+            userObj = firebaseUser;
+            console.log(userObj);
+            setTimeout(signedIn,500);
+        } else {
             console.log('not logged in');
-            
         }
     })
 
     //allow user to logout
-    btnLogout.on("click", function() {
+    $(document).on("click", "#btnLogout", function () {
         firebase.auth().signOut();
+        console.log("signing out!");
+        $(".nav-one").html('<a class="btn btn-lg btn-danger sign-in" style="margin-right:10px">Sign-In</a>');
+        $(".nav-two").html('<a class="btn btn-lg btn-danger sign-up">Sign-Up</a>');
     });
-  // declare auth database
- // const auth = firebase.auth();
-    //signs in existing user and a promise where you can resolve that user
- // auth.signInWithEmailAndPassword(email, pass);
-    //create an account.
- // auth.createUserWithEmailAndPassword(email, pass);
-    //monitor authentication state
- // auth.onAuthStateChanged(firebaseUser => {});
-  
-  
-
-
-
-
 
 
     function initialize() {
@@ -154,6 +192,7 @@ $(document).ready(function () {
 
     //submit click function
     $(".submit").on("click", function () {
+        event.preventDefault();
         resultStart = 0;
         var searchInput = $(".input-location").val().trim();
         if (searchInput) {
@@ -238,11 +277,22 @@ $(document).ready(function () {
             var dollarDiv = [];
             var starDiv = [];
 
-            //font awesome star and dollar icons
+            //font awesome star and dollar icons, favorite icons.
             var dollar = "<i class='fab fa-bitcoin'></i>";
             var fullStar = "<i class='fas fa-star'></i>";
             var emptyStar = "<i class='far fa-star'></i>";
             var halfStar = "<i class='fas fa-star-half-alt'></i>";
+            var solidHeart = "<i class='fas fa-heart'></i>";
+            var emptyHeart = "<i class='far fa-heart'></i>";
+
+            //heart click icon change
+            $(document).on("click", ".fa-heart", function () {
+                if ($(this).hasClass("fas")) {
+                    $(this).addClass("far").removeClass("fas");
+                } else {
+                    $(this).addClass("fas").removeClass("far");
+                }
+            })
 
             //create rating star divs
             for (i = 0; i < restaurant.length; i++) {
@@ -295,7 +345,7 @@ $(document).ready(function () {
                 } else {
                     thumb = "assets/images/placehold.jpg"
                 }
-                $(".searchresults").append("<div class='card' style='width: 12rem;'><img class='card-img-top' src='" + thumb + "' alt='Card image cap'><div class='card-body'><h5 class='card-title' style='text-align:center;height:50px;overflow:hidden;'>" + restaurant[i].name + "</h5><span>Price - " + dollarDiv[i][0].innerHTML +"</span><br><div style='margin-top:10px;'>"+ restaurant[i].rating.aggregate_rating + "&nbsp;&nbsp;" + starDiv[i][0].innerHTML + "</div><p class='card-text' style='margin-top:10px;font-size:12px;height:60px;'>" + restaurant[i].location.address + "</p><a target='_blank' href='" + restaurant[i].link + "' class='btn btn-primary' style='margin-left:15px;'>Zomato Page</a></div></div>");
+                $(".searchresults").append("<div class='card' style='width: 12rem;'><img class='card-img-top' src='" + thumb + "' alt='Card image cap'><div style='max-height:20px'>" + emptyHeart + "</div><div class='card-body'><h5 class='card-title' style='text-align:center;height:50px;overflow:hidden;'>" + restaurant[i].name + "</h5><span>Price - " + dollarDiv[i][0].innerHTML + "</span><br><div style='margin-top:10px;'>" + restaurant[i].rating.aggregate_rating + "&nbsp;&nbsp;" + starDiv[i][0].innerHTML + "</div><p class='card-text' style='margin-top:10px;font-size:12px;height:60px;'>" + restaurant[i].location.address + "</p><a target='_blank' href='" + restaurant[i].link + "' class='btn btn-primary' style='margin-left:15px;'>Zomato Page</a></div></div>");
             }
             $(".nextbutton").html("<button class='btn btn-outline-primary btn-lg shadow-sm previous' style='margin:auto;margin-top:30px;'>Previous Page</button><h4 style='margin:auto;margin-top:60px;'>Page " + parseInt(resultStart / 10 + 1) + " of " + pages + "</h4><button class='btn btn-outline-primary btn-lg shadow-sm next' style='margin:auto;margin-top:30px;'>Next Page</button>");
             $(".next").on("click", function () {
@@ -310,6 +360,11 @@ $(document).ready(function () {
                     resultStart -= 10;
                     searchCity();
                 }
+            })
+            $(".fa-heart").hover(function () {
+                $(this).css("font-size", "40px");
+            }, function () {
+                $(this).css("font-size", "30px");
             })
 
 
@@ -337,7 +392,7 @@ $(document).ready(function () {
                 bounds.extend(marker.position);
                 google.maps.event.addListener(marker, 'click', (function (marker, i) {
                     return function () {
-                        infoWindow.setContent("<div style='color: black'><strong>" + restaurant[i].name +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+ dollarDiv[i][0].innerHTML+ "</strong><hr><span>Rating: " + restaurant[i].rating.aggregate_rating + "</span>&nbsp;&nbsp;&nbsp;<span>" + starDiv[i][0].innerHTML + "</span>&nbsp;&nbsp;&nbsp;<span>" + restaurant[i].rating.votes + " Reviews</span><br><div style='margin-top:10px;'>" + restaurant[i].location.address + '</div><br>' + '</div>');
+                        infoWindow.setContent("<div style='color: black'><strong>" + restaurant[i].name + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + dollarDiv[i][0].innerHTML + "</strong><hr><span>Rating: " + restaurant[i].rating.aggregate_rating + "</span>&nbsp;&nbsp;&nbsp;<span>" + starDiv[i][0].innerHTML + "</span>&nbsp;&nbsp;&nbsp;<span>" + restaurant[i].rating.votes + " Reviews</span><br><div style='margin-top:10px;'>" + restaurant[i].location.address + '</div><br>' + '</div>');
                         infoWindow.setOptions({ maxWidth: 500 });
                         infoWindow.open(map, marker);
                     }
