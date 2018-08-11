@@ -390,19 +390,15 @@ $(document).ready(function () {
                 });
                 markers.push(marker);
                 bounds.extend(marker.position);
-                google.maps.event.addListener(marker, 'mouseover', (function (marker, i) {
+                google.maps.event.addListener(marker, 'click', (function (marker, i) {
                     return function () {
                         infoWindow.setContent("<div style='color: black'><strong>" + restaurant[i].name + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + dollarDiv[i][0].innerHTML + "</strong><hr><span>Rating: " + restaurant[i].rating.aggregate_rating + "</span>&nbsp;&nbsp;&nbsp;<span>" + starDiv[i][0].innerHTML + "</span>&nbsp;&nbsp;&nbsp;<span>" + restaurant[i].rating.votes + " Reviews</span><br><div style='margin-top:10px;'>" + restaurant[i].location.address + '</div><br>' + '</div>');
                         infoWindow.setOptions({ maxWidth: 500 });
                         infoWindow.open(map, marker);
                     }
                 })(marker, i));
-                google.maps.event.addListener(marker, 'mouseout', function () {
-                    infoWindow.close();
-                });
             };
             map.fitBounds(bounds);
-            google.maps.event.addDomListener(window, 'load', initialize);
         };
 
         //city ID query
