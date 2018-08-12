@@ -24,6 +24,8 @@ $(document).ready(function () {
     var userObj;
     var userDisplayName;
     var favRests;
+    var counter = 0;
+    console.log(counter)
 
     $("#map").hide();
 
@@ -112,7 +114,9 @@ $(document).ready(function () {
             if (firebase.auth().currentUser != null) {
                 firebase.auth().currentUser.updateProfile({
                     displayName: $("#txtUser").val().trim(),
+
                 })
+                
                 $(".pwRow").html("<h7 style='color:black;padding:0 0 10px 20px;'>Account Created!</h7>");
                 setTimeout(clickCancel, 2000);
             }
@@ -144,18 +148,22 @@ $(document).ready(function () {
         if (firebaseUser) {
             userObj = firebaseUser;
             console.log(userObj);
-            userDisplayName = userObj["displayName"];
-            console.log(userDisplayName);
             setTimeout(signedIn, 500);
+            userDisplayName = userObj.displayName;
+            console.log(userDisplayName);
+            
 
             var favorites = database.ref(userDisplayName);
             favorites.on('value', gotData, errData);
+            // favorites.on('child_added', gotData, errData);
 
             function gotData(data) {
-                console.log(data.val());
+                //will return null if no data is saved
+                console.log(data.val()+ " <--expect null if no data is stored yet");
+                if(data.val() !== null){
                 favRests = data.val();
-                console.log(favRests);
                 var keys = Object.keys(favRests);
+                console.log(keys);
                 for (var i = 0; i < keys.length; i++) {
                     var k = keys[i];
                     var restInfo = favRests[k].name;
@@ -163,13 +171,12 @@ $(document).ready(function () {
                 }
                 console.log(favRests);
                 console.log(keys);
-
+            }
             }
 
             function errData(err) {
                 console.log(error);
                 console.log(err);
-
             }
 
         } else {
@@ -263,7 +270,7 @@ $(document).ready(function () {
             } else {
                 thumb = "assets/images/placehold.jpg"
             }
-  
+
             $(".searchresults").append(`<div class='card' id='${i}' style = 'width: 12rem;'>
                                         <img class='card-img-top' src='${thumb}' alt='Card image cap'>
                                             <div style ='max-height:20px'>
@@ -286,31 +293,31 @@ $(document).ready(function () {
         }
         markers = [];
         var bounds = new google.maps.LatLngBounds();
-            infoWindow = new google.maps.InfoWindow();
-            for (i = 0; i < keys.length; i++) {
-                key = keys[i];
-                var marker = new google.maps.Marker({
-                    position: new google.maps.LatLng(favRests[key].location.latitude, favRests[key].location.longitude),
-                    map: map,
-                });
-                markers.push(marker);
-                bounds.extend(marker.position);
-                google.maps.event.addListener(marker, 'mouseover', (function (marker, i) {
-                    return function () {
-                        infoWindow.setContent("<div style='color: black'><strong>" + favRests[key].name + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + dollarDiv[i][0].innerHTML + "</strong><hr><span>Rating: " + favRests[key].rating.aggregate_rating + "</span>&nbsp;&nbsp;&nbsp;<span>" + starDiv[i][0].innerHTML + "</span>&nbsp;&nbsp;&nbsp;<span>" + favRests[key].rating.votes + " Reviews</span><br><div style='margin-top:10px;'>" + favRests[key].location.address + '</div><br>' + '</div>');
-                        infoWindow.setOptions({
-                            maxWidth: 500
-                        });
-                        infoWindow.open(map, marker);
-                    }
-                })(marker, i));
-                google.maps.event.addListener(marker, 'mouseout', function () {
-                    infoWindow.close();
-                });
-            };
-            map.fitBounds(bounds);
-            google.maps.event.addDomListener(window, 'load', initialize);
-        
+        infoWindow = new google.maps.InfoWindow();
+        for (i = 0; i < keys.length; i++) {
+            key = keys[i];
+            var marker = new google.maps.Marker({
+                position: new google.maps.LatLng(favRests[key].location.latitude, favRests[key].location.longitude),
+                map: map,
+            });
+            markers.push(marker);
+            bounds.extend(marker.position);
+            google.maps.event.addListener(marker, 'mouseover', (function (marker, i) {
+                return function () {
+                    infoWindow.setContent("<div style='color: black'><strong>" + favRests[key].name + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + dollarDiv[i][0].innerHTML + "</strong><hr><span>Rating: " + favRests[key].rating.aggregate_rating + "</span>&nbsp;&nbsp;&nbsp;<span>" + starDiv[i][0].innerHTML + "</span>&nbsp;&nbsp;&nbsp;<span>" + favRests[key].rating.votes + " Reviews</span><br><div style='margin-top:10px;'>" + favRests[key].location.address + '</div><br>' + '</div>');
+                    infoWindow.setOptions({
+                        maxWidth: 500
+                    });
+                    infoWindow.open(map, marker);
+                }
+            })(marker, i));
+            google.maps.event.addListener(marker, 'mouseout', function () {
+                infoWindow.close();
+            });
+        };
+        map.fitBounds(bounds);
+        google.maps.event.addDomListener(window, 'load', initialize);
+
 
 
     })
