@@ -76,6 +76,97 @@ $(document).ready(function () {
             console.log(e.message);
             $(".pwRow").html("<h7 style='color:black;padding:0 0 10px 20px;'>" + e.message + "</h7>");
         });
+
+      });    
+  });
+
+  //add signup event
+  $(document).keyup(function (event) {
+      event.preventDefault();
+      if (event.keyCode === 13) {
+          event.preventDefault();
+          if (signState === "signIn") {
+              if (($("#txtEmail").val().trim()) && ($("#txtPassword").val().trim())) {
+                  $("#btnLogin").click();
+              }
+          } else if (signState === "signUp") {
+              if (($("#txtEmail").val().trim()) && ($("#txtPassword").val().trim()) && ($("#txtUser").val().trim()))
+                  $("#btnSignUp").click();
+          }
+      }
+  })
+
+  $(document).on("click", "#btnSignUp", function () {
+      event.preventDefault();
+      //get email and password
+      $(".pwRow").empty();
+      const email = $("#txtEmail").val().trim();
+      const password = $("#txtPassword").val().trim();
+      const auth = firebase.auth();
+
+      //sign up
+      auth.createUserWithEmailAndPassword(email, password).catch(e => {
+          console.log(e.message);
+          $(".pwRow").html("<h7 style='color:black;padding:0 0 10px 20px;'>" + e.message + "</h7>");
+      }).then(function () {
+          if (firebase.auth().currentUser != null) {
+              firebase.auth().currentUser.updateProfile({
+                  displayName: $("#txtUser").val().trim(),
+              })
+              $(".pwRow").html("<h7 style='color:black;padding:0 0 10px 20px;'>Account Created!</h7>");
+              setTimeout(clickCancel, 2000);
+          }
+      })
+  })
+
+  $(document).on("click", "#btnCancel", function () {
+      clickCancel();
+  })
+
+  function clickCancel() {
+      $(".sign-up-box").empty();
+      $(".sign-up-box").removeClass("col-lg-3");
+      $(".sign-up-box").css("width", "");
+      $(".sign-up-box").css("height", "");
+      $(".jumbotron").removeClass("col-lg-8").addClass("col-lg-12");
+  }
+
+  function signedIn() {
+      clickCancel();
+      $(".nav-one").html("<h3 class='welcome'>Welcome "+userObj.displayName+"! How can we Hyelp you today?");
+      $(".nav-two").html("<a class='btn btn-lg btn-danger logOut' id='btnLogout'>Log Out</a>");
+  }
+
+  //add a realtime listener
+  firebase.auth().onAuthStateChanged(firebaseUser => {
+    if (firebaseUser) {
+        userObj = firebaseUser;
+        console.log(userObj);
+        setTimeout(signedIn, 500);
+        userDisplayName = userObj.displayName;
+        console.log(userDisplayName);
+        
+
+        var favorites = database.ref(userDisplayName);
+        favorites.on('value', gotData, errData);
+        // favorites.on('child_added', gotData, errData);
+
+        function gotData(data) {
+            //will return null if no data is saved
+            console.log(data.val()+ " <--expect null if no data is stored yet");
+            if(data.val() !== null){
+            favRests = data.val();
+            var keys = Object.keys(favRests);
+            console.log(keys);
+            for (var i = 0; i < keys.length; i++) {
+                var k = keys[i];
+                var restInfo = favRests[k].name;
+                console.log(k, restInfo);
+            };
+            console.log(favRests);
+            console.log(keys);
+            };
+        };
         userDisplayName = userObj["displayName"];
 
 
