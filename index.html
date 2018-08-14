@@ -30,10 +30,10 @@
     <div class="container">
         <!--SignIn and SignOut Buttons-->
         <div class="container">
-            <div>
-                <ul class="nav justify-content-end">
+            <div id="welcome-sign">
+                <ul class="nav justify-content-begining">
                     <li class="nav-item nav-one">
-                        <a class="btn btn-lg btn-danger sign-in" style="margin-right:10px">Sign-In</a>
+                        <a class="btn btn-lg btn-danger sign-in">Sign-In</a>
                     </li>
                     <li class="nav-item nav-two">
                         <a class="btn btn-lg btn-danger sign-up">Sign-Up</a>
@@ -41,24 +41,25 @@
                 </ul>
             </div>
             <div class="headerContainer">
-                <div class="sign-up-box" style="float:left;overflow:auto;margin-top:24px;"></div>"
+                <div class="sign-up-box"></div>
                 <div class="col-lg-12 jumbotron" style="overflow:auto">
-                <h1>
-                    <span class="glyphicon glyphicon-foodie"></span> HYelp
-                    <span class="glyphicon glyphicon-foodie"></span>
-                </h1>
-                <p>The Better Yelp Alternative</p>
+                    <h1>
+                        <span class="glyphicon glyphicon-foodie"></span> HYelp
+                        <span class="glyphicon glyphicon-foodie"></span>
+                    </h1>
+                    <p>The Better Yelp Alternative</p>
+                </div>
             </div>
-            </div>
-            
+
             <!--Zomato Search Bar-->
-            <div class="row form-group" style="margin-left:25px;">
-                <select style="width:40%;height:62px;font-size:30px;" id='inputCategory' class='form-control'>
+            <div class="row form-group">
+                <select id="inputCategory" class="col-lg-4 form-control">
                     <option value='' selected>What are you craving?</option>
-                    <input style="height:62px;font-size:30px;float:left;width:50%" type="text" class="form-control input-location" placeholder="Find Near City or U.S. Zip Code">
-                    <button class="btn btn-outline-primary btn-lg shadow-sm submit" style="border-radius:10px;">
+                    <input id="inputLocation" class="col-lg-7 form-control input-location" type="text" placeholder="Find Near City or U.S. Zip Code">
+                    <button id="searchBtn" class="col-lg-1 btn btn-outline-primary btn-lg shadow-sm submit">
                         <i class="fab fa-searchengin fa-2x rounded"></i>
                     </button>
+                </select>
             </div>
             <!--End of Zomato Search Bar-->
 
@@ -71,7 +72,7 @@
             <br>
             <br>
             <div class="gmapresults">
-                <div id="map" style="width:100%;height:500px;background:yellow"></div>
+                <div id="map"></div>
             </div>
             <!--Button that will let user scroll to top-->
             <button onclick="topFunction()" style="visibility:hidden;" id="myBtn" title="Go to top">Top</button>
