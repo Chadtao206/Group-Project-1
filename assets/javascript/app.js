@@ -144,7 +144,7 @@ $(document).ready(function () {
 
   function signedIn() {
       clickCancel();
-      $(".nav-one").html("<h3 class='welcome' style='color:black;margin-top:40px;padding-right:120px;width:100%;text-align:center;overflow:auto;'>Welcome "+userObj.displayName+"! How can we Hyelp you today?");
+      $(".nav-one").html("<h3 class='welcome'>Welcome "+userObj.displayName+"! How can we Hyelp you today?");
       $(".nav-two").html("<a class='btn btn-lg btn-danger logOut' id='btnLogout'>Log Out</a>");
   }
 
