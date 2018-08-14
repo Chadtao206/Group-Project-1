@@ -61,12 +61,14 @@ $(document).ready(function () {
     $('html').bind('keypress', function (e) {
         if (e.keyCode == 13) {
             e.preventDefault();
-            if (signState === 0) {
-                signIn();
-            } else if (signState === 1) {
-                signUp();
-            } else if (signState === 2) {
-                recovery();
+            if (!$("#inputLocation").val().trim()) {
+                if (signState === 0) {
+                    signIn();
+                } else if (signState === 1) {
+                    signUp();
+                } else if (signState === 2) {
+                    recovery();
+                }
             }
         }
     });
@@ -124,12 +126,12 @@ $(document).ready(function () {
 
     //forgot password
     function recovery() {
-            firebase.auth().sendPasswordResetEmail($("#txtEmail").val().trim()).then(function () {
-                console.log("email sent succesfully");
-                $(".pwRow").html("<h7 style='color:black;padding:0 0 10px 20px;'>Your email was successfully sent</h7>");
-            }).catch(function (error) {
-                $(".pwRow").html("<h7 style='color:black;padding:0 0 10px 20px;'>" + error + "</h7>");
-            });
+        firebase.auth().sendPasswordResetEmail($("#txtEmail").val().trim()).then(function () {
+            console.log("email sent succesfully");
+            $(".pwRow").html("<h7 style='color:black;padding:0 0 10px 20px;'>Your email was successfully sent</h7>");
+        }).catch(function (error) {
+            $(".pwRow").html("<h7 style='color:black;padding:0 0 10px 20px;'>" + error + "</h7>");
+        });
     }
 
 
@@ -177,7 +179,7 @@ $(document).ready(function () {
         clickCancel();
     })
 
-    
+
     //cancels sign form
     function clickCancel() {
         $(".sign-up-box").empty();
@@ -521,6 +523,7 @@ $(document).ready(function () {
     //run submit when enter is pressed
     $(".input-location").keyup(function (event) {
         if (event.keyCode === 13) {
+            signState = 3;
             $(".submit").click();
         }
     })
