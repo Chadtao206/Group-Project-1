@@ -155,7 +155,7 @@ $(document).ready(function () {
 
     function signedIn() {
         clickCancel();
-        $(".nav-two").html("<h3 class='welcome' style='color:black;margin-top:40px;padding-right:200px;width:100%;text-align:center;'>Welcome " + userObj.displayName + "! How can we Hyelp you today?");
+        $(".nav-two").html("<h3 class='welcome'>Welcome " + userObj.displayName + "! How can we Hyelp you today?");
         $(".nav-one").html("<a class='btn btn-lg btn-danger logOut' id='btnLogout'>Log Out</a>");
         $(".nav-one").append("<span class='btn btn-lg btn-danger favorites' style='margin-left:15px;'><i class='fab fa-gratipay'></i> My Favorites</span>"
 
@@ -240,6 +240,7 @@ $(document).ready(function () {
         //remove fav
         if ($(this).hasClass("fas")) {
             $(this).addClass("far").removeClass("fas");
+            $(this).attr("title","Click to Fav");
             var temp = (favRestName).indexOf(restaurant[$(this).attr("order")].name);
             favRestName.splice(temp, 1)
             favRest.splice(temp, 1);
@@ -248,9 +249,10 @@ $(document).ready(function () {
                     [userName]: { favRest: favRest, favRestName: favRestName, }
                 })
             }
-            //add fav
+        //add fav
         } else {
             $(this).addClass("fas").removeClass("far");
+            $(this).attr("title","Click to Unfav :(");
             favRest.push(restaurant[$(this).attr("order")]);
             favRestName.push(restaurant[$(this).attr("order")].name)
             if (userName) {
@@ -260,25 +262,47 @@ $(document).ready(function () {
             }
         }
     })
+
+    //unfav inside fav display
+    $(document).on("click", ".fav-click", function () {
+        $(this).addClass("far").removeClass("fas");
+        var temp = (favRestName).indexOf(restaurant[$(this).attr("order")].name);
+        $(this).parent().parent().remove();
+        favRestName.splice(temp, 1)
+        favRest.splice(temp, 1);
+        if (userName) {
+            database.ref().update({
+                [userName]: { favRest: favRest, favRestName: favRestName, }
+            })
+        }
+        if (favRest.length < 1 && favRestName.length < 1) {
+            $(".searchresults").html("<br><h1 style='color:rgb(170, 9, 9);'>No favorites saved. Get started by searching a city or zip code!")
+            $("#map").hide();
+            $("#myBtn").css("visibility", "hidden");
+        }
+        console.log(favRest);
+        console.log(favRestName);
+    })
+
     //Display Favorite restaurants
     $(document).on("click", ".favorites", function () {
         $("#map").hide();
         favDisp = true;
-            restaurant = [];
-            for(i=0;i<favRest.length;i++){
-                restaurant.push(favRest[i]);
-            }
-        if (favRest.length>0) {
-          displayResults();
-        $(".fa-heart").removeClass("fa-heart-click");
-        $(".searchresults").css("height","450px");
-        $(".searchresults").css("overflow-y","auto");  
-        $(".nextbutton").empty();
-        }else{
-            $(".searchresults").html("<br><h1>No favorites saved. Get started by searching a city or zip code!")
-        }   
+        restaurant = [];
+        for (i = 0; i < favRest.length; i++) {
+            restaurant.push(favRest[i]);
+        }
+        if (favRest.length > 0) {
+            displayResults();
+            $(".fa-heart").removeClass("fa-heart-click").addClass("fav-click");
+            $(".fa-heart").attr("title","Click to Unfav :(");
+            $(".searchresults").css("height", "450px");
+            $(".searchresults").css("overflow-y", "auto");
+            $(".nextbutton").empty();
+        } else {
+            $(".searchresults").html("<br><h1 style='color:rgb(170, 9, 9);'>No favorites saved. Get started by searching a city or zip code!")
+        }
     })
-
 
     //display results function
     function displayResults() {
@@ -359,7 +383,7 @@ $(document).ready(function () {
             if (favRestName.includes(restaurant[i].name)) {
                 temp = "fas";
             }
-            $(".searchresults").append("<div class='card' style='width: 12rem;'><img class='card-img-top' src='" + thumb + "' alt='Card image cap'><div style='max-height:20px'><i class='" + temp + " fa-heart fa-heart-click' order='" + i + "'></i></div><div class='card-body'><h5 class='card-title' style='text-align:center;height:50px;overflow:hidden;'>" + restaurant[i].name + "</h5><span>Price - " + dollarDiv[i][0].innerHTML + "</span><br><div style='margin-top:10px;'>" + restaurant[i].rating.aggregate_rating + "&nbsp;&nbsp;" + starDiv[i][0].innerHTML + "</div><p class='card-text' style='margin-top:10px;font-size:12px;height:60px;'>" + restaurant[i].location.address + "</p><a target='_blank' href='" + restaurant[i].link + "' class='btn btn-primary' style='margin-left:15px;'>Zomato Page</a></div></div>");
+            $(".searchresults").append("<div class='card' style='width: 12rem;'><img class='card-img-top' src='" + thumb + "' alt='Card image cap'><div style='max-height:20px'><i data-toggle='tooltip' data-placement='top' title='Click to Fav' class='" + temp + " fa-heart fa-heart-click' order='" + i + "'></i></div><div class='card-body'><h5 class='card-title' style='text-align:center;height:50px;overflow:hidden;'>" + restaurant[i].name + "</h5><span>Price - " + dollarDiv[i][0].innerHTML + "</span><br><div style='margin-top:10px;'>" + restaurant[i].rating.aggregate_rating + "&nbsp;&nbsp;" + starDiv[i][0].innerHTML + "</div><p class='card-text' style='margin-top:10px;font-size:12px;height:60px;'>" + restaurant[i].location.address + "</p><a target='_blank' href='" + restaurant[i].link + "' class='btn btn-primary' style='margin-left:15px;'>Zomato Page</a></div></div>");
         }
         $(".fa-heart").hover(function () {
             $(this).css("font-size", "40px");
@@ -497,11 +521,11 @@ $(document).ready(function () {
             }
         }
 
-        
+
         //city ID query
         function cityIdQuery() {
-            $(".searchresults").css("height","");
-            $(".searchresults").css("overflow-y","");
+            $(".searchresults").css("height", "");
+            $(".searchresults").css("overflow-y", "");
             $.ajax({
                 url: "https://developers.zomato.com/api/v2.1/cities?q=" + city,
                 method: "GET",
