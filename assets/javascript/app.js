@@ -26,6 +26,7 @@ $(document).ready(function () {
     var favRestName = [];
     var count = 0;
     var favDisp = false;
+    var signState = 0;
 
     $("#map").hide();
 
@@ -56,6 +57,21 @@ $(document).ready(function () {
         }
     })
 
+    //Enter Form Function
+    $('html').bind('keypress', function (e) {
+        if (e.keyCode == 13) {
+            e.preventDefault();
+            if (signState === 0) {
+                signIn();
+            } else if (signState === 1) {
+                signUp();
+            } else if (signState === 2) {
+                recovery();
+            }
+        }
+    });
+
+
     //clear page
     function clearDisplay() {
         $("#myBtn").css("visibility", "hidden");
@@ -64,27 +80,35 @@ $(document).ready(function () {
         $(".nextbutton").empty();
     }
 
-    //login signup buttons
+    //create login and signup buttons
     $(document).on("click", ".sign-in", function () {
         $(".jumbotron").removeClass("col-lg-12").addClass("col-lg-8");
         $(".sign-up-box").addClass("col-lg-3");
         $(".sign-up-box").css("width", "100%");
-        $(".sign-up-box").css("height", "275px");
+        $(".sign-up-box").css("height", "265px");
         $(".sign-up-box").html('<div class="container"><div><ul class="nav justify-content-end"><li class="nav-item"></li></ul></div><div class="row"><div class="col-lg-12"><form><div class="form-group"><input id="txtEmail" type="email" class="form-control" placeholder="Enter E-Mail"></div></form></div></div><div class="row"><div class="col-lg-12"><form><div class="form-group"><input id="txtPassword" type="password" class="form-control" placeholder="Password"></div></form></div></div><div class="row pwRow"></div><div class="row"><div class="col-lg-6"><button id="btnLogin" type="submit" class="btn btn-primary form-control">Login</button></div><div class="col-lg-6"><button id="btnCancel" type="submit" class="btn btn-primary form-control">Cancel</button></div></div></div><br><div class="col-lg-12"><button id="passReset" type="submit" class="btn btn-primary form-control">Forget Password?</button></div></div>')
+        signState = 0;
     })
 
     $(document).on("click", ".sign-up", function () {
         $(".jumbotron").removeClass("col-lg-12").addClass("col-lg-8");
         $(".sign-up-box").addClass("col-lg-3");
         $(".sign-up-box").css("width", "100%");
-        $(".sign-up-box").css("height", "275px");
+        $(".sign-up-box").css("height", "265px");
         $(".sign-up-box").html('<div class="container"><div><ul class="nav justify-content-end"><li class="nav-item"></li></ul></div><div class="row"><div class="col-lg-12"><form><div class="form-group"><input id="txtUser" type="userName" class="form-control" placeholder="Enter User Name"></div></form></div></div><div class="row"><div class="col-lg-12"><form><div class="form-group"><input id="txtEmail" type="email" class="form-control" placeholder="Enter E-Mail"></div></form></div></div><div class="row"><div class="col-lg-12"><form><div class="form-group"><input id="txtPassword" type="password" class="form-control" placeholder="Password"></div></form></div></div><div class="row pwRow"></div><div class="row"><div class="col-lg-6"><button id="btnSignUp" type="submit" class="btn btn-primary form-control">Sign-Up</button></div><div class="col-lg-6"><button id="btnCancel" type="submit" class="btn btn-primary form-control">Cancel</button></div></div></div>')
+        signState = 1;
     })
 
+    $(document).on("click", "#passReset", function () {
+        $("#txtPassword").parent().empty();
+        $("#btnLogin").text("Submit").attr("id", "reset");
+        signState = 2;
+    })
+
+
     //add login event
-    $(document).on("click", "#btnLogin", function () {
+    function signIn() {
         event.preventDefault();
-        signState = "signIn";
         //get email and password
         $(".pwRow").empty();
         const email = $("#txtEmail").val().trim();
@@ -95,28 +119,22 @@ $(document).ready(function () {
             console.log(e.message);
             $(".pwRow").html("<h7 style='color:black;padding:0 0 10px 20px;'>" + e.message + "</h7>");
         })
-    })
+    }
+
 
     //forgot password
-    $(document).on("click", "#passReset", function () {
-        $("#txtPassword").parent().empty();
-        $("#btnLogin").text("Submit").attr("id", "reset");
-        $("#reset").on("click", function () {
+    function recovery() {
             firebase.auth().sendPasswordResetEmail($("#txtEmail").val().trim()).then(function () {
                 console.log("email sent succesfully");
                 $(".pwRow").html("<h7 style='color:black;padding:0 0 10px 20px;'>Your email was successfully sent</h7>");
             }).catch(function (error) {
-                console.log("email wasn't sent");
                 $(".pwRow").html("<h7 style='color:black;padding:0 0 10px 20px;'>" + error + "</h7>");
             });
-        })
-    })
+    }
 
 
-
-    //add signup event
-
-    $(document).on("click", "#btnSignUp", function () {
+    //Sign Up Function
+    function signUp() {
         event.preventDefault();
         //get email and password
         $(".pwRow").empty();
@@ -139,12 +157,28 @@ $(document).ready(function () {
                 setTimeout(clickCancel, 2000);
             }
         })
+    }
+
+
+    //define sign functions
+    $(document).on("click", "#btnLogin", function () {
+        signIn();
+    })
+
+    $(document).on("click", "#reset", function () {
+        recovery();
+    })
+
+    $(document).on("click", "#btnSignUp", function () {
+        signUp();
     })
 
     $(document).on("click", "#btnCancel", function () {
         clickCancel();
     })
 
+    
+    //cancels sign form
     function clickCancel() {
         $(".sign-up-box").empty();
         $(".sign-up-box").removeClass("col-lg-3");
@@ -153,12 +187,12 @@ $(document).ready(function () {
         $(".jumbotron").removeClass("col-lg-8").addClass("col-lg-12");
     }
 
+    //signed in display
     function signedIn() {
         clickCancel();
         $(".nav-two").html("<h3 class='welcome'>Welcome " + userObj.displayName + "! How can we Hyelp you today?");
         $(".nav-one").html("<a class='btn btn-lg btn-danger logOut' id='btnLogout'>Log Out</a>");
         $(".nav-one").append("<span class='btn btn-lg btn-danger favorites' style='margin-left:15px;'><i class='fab fa-gratipay'></i> My Favorites</span>"
-
         )
     }
 
@@ -240,7 +274,7 @@ $(document).ready(function () {
         //remove fav
         if ($(this).hasClass("fas")) {
             $(this).addClass("far").removeClass("fas");
-            $(this).attr("title","Click to Fav");
+            $(this).attr("title", "Click to Fav");
             var temp = (favRestName).indexOf(restaurant[$(this).attr("order")].name);
             favRestName.splice(temp, 1)
             favRest.splice(temp, 1);
@@ -249,10 +283,10 @@ $(document).ready(function () {
                     [userName]: { favRest: favRest, favRestName: favRestName, }
                 })
             }
-        //add fav
+            //add fav
         } else {
             $(this).addClass("fas").removeClass("far");
-            $(this).attr("title","Click to Unfav :(");
+            $(this).attr("title", "Click to Unfav :(");
             favRest.push(restaurant[$(this).attr("order")]);
             favRestName.push(restaurant[$(this).attr("order")].name)
             if (userName) {
@@ -295,7 +329,7 @@ $(document).ready(function () {
         if (favRest.length > 0) {
             displayResults();
             $(".fa-heart").removeClass("fa-heart-click").addClass("fav-click");
-            $(".fa-heart").attr("title","Click to Unfav :(");
+            $(".fa-heart").attr("title", "Click to Unfav :(");
             $(".searchresults").css("height", "450px");
             $(".searchresults").css("overflow-y", "auto");
             $(".nextbutton").empty();
@@ -504,7 +538,7 @@ $(document).ready(function () {
                 cityIdQuery();
             } else {
                 if ((searchInput.toString().length === 5) && (parseInt(searchInput) < 99951) && (parseInt(searchInput) > 500)) {
-                    var zipURL = "https://api.zip-codes.com/ZipCodesAPI.svc/1.0/GetZipCodeDetails/" + searchInput + "?key=3932FDORZQE6FVW1VJ1Q";
+                    var zipURL = "https://api.zip-codes.com/ZipCodesAPI.svc/1.0/GetZipCodeDetails/" + searchInput + "?key=SJSUV9RP8Q6BEGNEUE7V";
                     $.ajax({
                         url: zipURL,
                         method: "GET",
@@ -519,6 +553,7 @@ $(document).ready(function () {
                     $(".searchresults").html("<h1 style='text-align:center'>Not a valid zipcode!</h1>")
                 }
             }
+            $(".input-location").val("");
         }
 
 
