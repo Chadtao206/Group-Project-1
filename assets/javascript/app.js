@@ -23,71 +23,60 @@ $(document).ready(function () {
     var signState = "";
     var userObj;
     var userDisplayName;
+    var favorites;
     var favRests;
     var counter = 0;
     console.log(counter)
 
     $("#map").hide();
 
-  // Configure Firebase
-  var config = {
-    apiKey: "AIzaSyBNrkLJnuk0Vbz0xyNdNkjPjc_uQsKebPQ",
-    authDomain: "hyelp-1533266960440.firebaseapp.com",
-    databaseURL: "https://hyelp-1533266960440.firebaseio.com",
-    projectId: "hyelp-1533266960440",
-    storageBucket: "",
-    messagingSenderId: "1028833344633"
-  };
-  
-  // Initialize Firebase
-  firebase.initializeApp(config);
-  var database = firebase.database();
+    // Configure Firebase
+    var config = {
+        apiKey: "AIzaSyBNrkLJnuk0Vbz0xyNdNkjPjc_uQsKebPQ",
+        authDomain: "hyelp-1533266960440.firebaseapp.com",
+        databaseURL: "https://hyelp-1533266960440.firebaseio.com",
+        projectId: "hyelp-1533266960440",
+        storageBucket: "",
+        messagingSenderId: "1028833344633"
+    };
 
-  //login signup buttons
-  $(document).on("click", ".sign-in", function(){
-      $(".jumbotron").removeClass("col-lg-12").addClass("col-lg-8");
-      $(".sign-up-box").addClass("col-lg-3");
-      $(".sign-up-box").css("width","100%");
-      $(".sign-up-box").css("height","275px");
-      $(".sign-up-box").html('<div class="container"><div><ul class="nav justify-content-end"><li class="nav-item"></li></ul></div><div class="row"><div class="col-lg-12"><form><div class="form-group"><input id="txtEmail" type="email" class="form-control" placeholder="Enter E-Mail"></div></form></div></div><div class="row"><div class="col-lg-12"><form><div class="form-group"><input id="txtPassword" type="password" class="form-control" placeholder="Password"></div></form></div></div><div class="row pwRow"></div><div class="row"><div class="col-lg-6"><button id="btnLogin" type="submit" class="btn btn-primary form-control">Login</button></div><div class="col-lg-6"><button id="btnCancel" type="submit" class="btn btn-primary form-control">Cancel</button></div></div></div><br><div class="col-lg-12"><button id="passReset" type="submit" class="btn btn-primary form-control">Forget Password?</button></div></div>')
-  });
+    // Initialize Firebase
+    firebase.initializeApp(config);
+    var database = firebase.database();
 
-  $(document).on("click", ".sign-up", function(){
-      $(".jumbotron").removeClass("col-lg-12").addClass("col-lg-8");
-      $(".sign-up-box").addClass("col-lg-3");
-      $(".sign-up-box").css("width","100%");
-      $(".sign-up-box").css("height","275px");
-      $(".sign-up-box").html('<div class="container"><div><ul class="nav justify-content-end"><li class="nav-item"></li></ul></div><div class="row"><div class="col-lg-12"><form><div class="form-group"><input id="txtUser" type="userName" class="form-control" placeholder="Enter User Name"></div></form></div></div><div class="row"><div class="col-lg-12"><form><div class="form-group"><input id="txtEmail" type="email" class="form-control" placeholder="Enter E-Mail"></div></form></div></div><div class="row"><div class="col-lg-12"><form><div class="form-group"><input id="txtPassword" type="password" class="form-control" placeholder="Password"></div></form></div></div><div class="row pwRow"></div><div class="row"><div class="col-lg-6"><button id="btnSignUp" type="submit" class="btn btn-primary form-control">Sign-Up</button></div><div class="col-lg-6"><button id="btnCancel" type="submit" class="btn btn-primary form-control">Cancel</button></div></div></div>')
-  });
 
-  //add login event
-  $(document).on("click", "#btnLogin", function () {
-      event.preventDefault();
-      signState = "signIn";
-      //get email and password
-      $(".pwRow").empty();
-      const email = $("#txtEmail").val().trim();
-      const password = $("#txtPassword").val().trim();
-      const auth = firebase.auth();
-      //sign in
-      auth.signInWithEmailAndPassword(email, password).catch(e => {
-          console.log(e.message);
-          $(".pwRow").html("<h7 style='color:black;padding:0 0 10px 20px;'>" + e.message + "</h7>");
-      });
-  });
+    //login signup buttons
+    $(document).on("click", ".sign-in", function () {
+        $(".jumbotron").removeClass("col-lg-12").addClass("col-lg-8");
+        $(".sign-up-box").addClass("col-lg-3");
+        $(".sign-up-box").css("width", "100%");
+        $(".sign-up-box").css("height", "275px");
+        $(".sign-up-box").html('<div class="container"><div><ul class="nav justify-content-end"><li class="nav-item"></li></ul></div><div class="row"><div class="col-lg-12"><form><div class="form-group"><input id="txtEmail" type="email" class="form-control" placeholder="Enter E-Mail"></div></form></div></div><div class="row"><div class="col-lg-12"><form><div class="form-group"><input id="txtPassword" type="password" class="form-control" placeholder="Password"></div></form></div></div><div class="row pwRow"></div><div class="row"><div class="col-lg-6"><button id="btnLogin" type="submit" class="btn btn-primary form-control">Login</button></div><div class="col-lg-6"><button id="btnCancel" type="submit" class="btn btn-primary form-control">Cancel</button></div></div></div>')
+    })
 
-  //forgot password
-  $(document).on("click", "#passReset", function () {
-      $("#txtPassword").parent().empty();
-      $("#btnLogin").text("Submit").attr("id", "reset");
-  $("#reset").on("click", function() {
-      firebase.auth().sendPasswordResetEmail($("#txtEmail").val().trim()).then(function() {
-          console.log("email sent succesfully");
-          $(".pwRow").html("<h7 style='color:black;padding:0 0 10px 20px;'>Your email was successfully sent</h7>");
-        }).catch(function(error) {
-          console.log("email wasn't sent");
-          $(".pwRow").html("<h7 style='color:black;padding:0 0 10px 20px;'>" + error + "</h7>");
+    $(document).on("click", ".sign-up", function () {
+        $(".jumbotron").removeClass("col-lg-12").addClass("col-lg-8");
+        $(".sign-up-box").addClass("col-lg-3");
+        $(".sign-up-box").css("width", "100%");
+        $(".sign-up-box").css("height", "275px");
+        $(".sign-up-box").html('<div class="container"><div><ul class="nav justify-content-end"><li class="nav-item"></li></ul></div><div class="row"><div class="col-lg-12"><form><div class="form-group"><input id="txtUser" type="userName" class="form-control" placeholder="Enter User Name"></div></form></div></div><div class="row"><div class="col-lg-12"><form><div class="form-group"><input id="txtEmail" type="email" class="form-control" placeholder="Enter E-Mail"></div></form></div></div><div class="row"><div class="col-lg-12"><form><div class="form-group"><input id="txtPassword" type="password" class="form-control" placeholder="Password"></div></form></div></div><div class="row pwRow"></div><div class="row"><div class="col-lg-6"><button id="btnSignUp" type="submit" class="btn btn-primary form-control">Sign-Up</button></div><div class="col-lg-6"><button id="btnCancel" type="submit" class="btn btn-primary form-control">Cancel</button></div></div></div>')
+    })
+
+    //add login event
+    $(document).on("click", "#btnLogin", function () {
+        event.preventDefault();
+        signState = "signIn";
+        //get email and password
+        $(".pwRow").empty();
+        const email = $("#txtEmail").val().trim();
+        const password = $("#txtPassword").val().trim();
+        const auth = firebase.auth();
+        //sign in
+        auth.signInWithEmailAndPassword(email, password).catch(e => {
+            console.log(e.message);
+            $(".pwRow").html("<h7 style='color:black;padding:0 0 10px 20px;'>" + e.message + "</h7>");
         });
+
       });    
   });
 
@@ -178,124 +167,255 @@ $(document).ready(function () {
             console.log(keys);
             };
         };
+        userDisplayName = userObj["displayName"];
 
-        function errData(err) {
-            console.log(error);
-            console.log(err);
-        };
 
-    } else {
-        console.log('not logged in');
-    };
-});
+    })
 
-  //allow user to logout
-  $(document).on("click", "#btnLogout", function () {
-      firebase.auth().signOut();
-      console.log("signing out!");
-      $(".nav-one").html('<a class="btn btn-lg btn-danger sign-in" style="margin-right:10px">Sign-In</a>');
-      $(".nav-two").html('<a class="btn btn-lg btn-danger sign-up">Sign-Up</a>');
-  });
 
-  // add favorites by clicking heart icon
-  $(document).on("click", "#btnFavorite", function () {
+    //add signup event
+    $(document).keyup(function (event) {
+        event.preventDefault();
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            if (signState === "signIn") {
+                if (($("#txtEmail").val().trim()) && ($("#txtPassword").val().trim())) {
+                    $("#btnLogin").click();
+                }
+            } else if (signState === "signUp") {
+                if (($("#txtEmail").val().trim()) && ($("#txtPassword").val().trim()) && ($("#txtUser").val().trim()))
+                    $("#btnSignUp").click();
+            }
+        }
 
-    var keys = Object.keys(favRests);
-    //rating display algorithm
-    var ratingDisp = {
-        avg: [],
-        stars: [],
-        half: [],
-        empty: [],
-    };
+    })
 
-    var dollarDiv = [];
-    var starDiv = [];
+    $(document).on("click", "#btnSignUp", function () {
+        event.preventDefault();
+        //get email and password
+        $(".pwRow").empty();
+        const email = $("#txtEmail").val().trim();
+        const password = $("#txtPassword").val().trim();
+        const auth = firebase.auth();
 
-    //font awesome star and dollar icons, favorite icons.
-    var dollar = "<i class='fab fa-bitcoin'></i>";
-    var fullStar = "<i class='fas fa-star'></i>";
-    var emptyStar = "<i class='far fa-star'></i>";
-    var halfStar = "<i class='fas fa-star-half-alt'></i>";
-    var solidHeart = "<i class='fas fa-heart'></i>";
-    var emptyHeart = "<i class='far fa-heart'></i>";
+        //sign up
+        auth.createUserWithEmailAndPassword(email, password).catch(e => {
+            console.log(e.message);
+            $(".pwRow").html("<h7 style='color:black;padding:0 0 10px 20px;'>" + e.message + "</h7>");
+        }).then(function () {
+            if (firebase.auth().currentUser != null) {
+                firebase.auth().currentUser.updateProfile({
+                    displayName: $("#txtUser").val().trim(),
 
-    //create rating star divs
-    for (i = 0; i < keys.length; i++) {
-        var key = keys[i];
-        var temp = Math.floor(favRests[key].rating.aggregate_rating);
-        var temp2 = favRests[key].rating.aggregate_rating - temp;
-        var half;
-        var empty = 5 - temp;
-        if (temp2 > 0.71) {
-            temp++;
-            half = false;
-            empty--;
-        } else if (temp2 < 0.29) {
-            half = false;
+                })
+
+                $(".pwRow").html("<h7 style='color:black;padding:0 0 10px 20px;'>Account Created!</h7>");
+                setTimeout(clickCancel, 2000);
+            }
+        })
+
+    })
+
+    $(document).on("click", "#btnCancel", function () {
+        clickCancel();
+    })
+
+    function clickCancel() {
+        $(".sign-up-box").empty();
+        $(".sign-up-box").removeClass("col-lg-3");
+        $(".sign-up-box").css("width", "");
+        $(".sign-up-box").css("height", "");
+        $(".jumbotron").removeClass("col-lg-8").addClass("col-lg-12");
+    }
+
+    function signedIn() {
+        clickCancel();
+        $(".nav-one").html("<h3 class='welcome'>Welcome " + userObj.displayName + "! How can we Hyelp you today?");
+        $(".nav-two").html(`<a class= 'btn btn-lg btn-danger favorite' id='btnFavorite'>Favorites</a> &nbsp; <a class='btn btn-lg btn-danger logOut' id='btnLogout'>Log Out</a>`);
+
+    }
+
+    //add a realtime listener
+    firebase.auth().onAuthStateChanged(firebaseUser => {
+        if (firebaseUser) {
+            userObj = firebaseUser;
+            console.log(userObj);
+            setTimeout(signedIn, 500);
+            setTimeout(function () {
+                userDisplayName = userObj.displayName;
+                console.log(userDisplayName);
+                favorites = database.ref(userDisplayName);
+                favorites.on('value', gotData, errData);
+            }, 500);
+
+            
+              // favorites.on('child_added', gotData, errData);
+            function gotData(data) {
+                //will return null if no data is saved
+                console.log(data.val() + " <--expect null if no data is stored yet");
+                if (data.val() !== null) {
+                    favRests = data.val();
+                    var keys = Object.keys(favRests);
+                    console.log(keys);
+                    for (var i = 0; i < keys.length; i++) {
+                        var k = keys[i];
+                        var restInfo = favRests[k].name;
+                        console.log(k, restInfo);
+                    }
+                    console.log(favRests);
+                    console.log(keys);
+                }
+            }
+
+            function errData(err) {
+                console.log(error);
+                console.log(err);
+            }
+
         } else {
-            half = true;
-            empty--;
-        };
-        ratingDisp.avg.push(favRests[key].rating.aggregate_rating);
-        ratingDisp.stars.push(temp);
-        ratingDisp.half.push(half);
-        ratingDisp.empty.push(empty);
-    };
-    for (i = 0; i < keys.length; i++) {
-        var temp = $("<div></div>");
-        for (j = 0; j < ratingDisp.stars[i]; j++) {
-            temp.append(fullStar);
-        };
-        if (ratingDisp.half[i]) {
-            temp.append(halfStar);
-        };
-        for (j = 0; j < ratingDisp.empty[i]; j++) {
-            temp.append(emptyStar);
-        };
-        starDiv.push(temp);
-    };
+            console.log('not logged in');
+        }
+    })
 
-    //create price dollar divs
-    for (i = 0; i < keys.length; i++) {
-        var key = keys[i];
-        var temp = $("<div></div>");
-        for (j = 0; j < favRests[key].priceRange; j++) {
-            temp.append(dollar);
-        };
-        dollarDiv.push(temp);
-    };
+    //allow user to logout
+    $(document).on("click", "#btnLogout", function () {
+        firebase.auth().signOut();
+        console.log("signing out!");
+        $(".nav-one").html('<a class="btn btn-lg btn-danger sign-in" style="margin-right:10px">Sign-In</a>');
+        $(".nav-two").html('<a class="btn btn-lg btn-danger sign-up">Sign-Up</a>');
+    });
 
-    $(".searchresults").empty();
-    console.log(favRests);
-    var keys = Object.keys(favRests);
-    for (var i = 0; i < keys.length; i++) {
-        key = keys[i];
-        if (favRests[key].thumbnail) {
-            var thumb = favRests[key].thumbnail;
-        } else {
-            thumb = "assets/images/placehold.jpg"
-        };
+    $(document).on("click", "#btnFavorite", function () {
 
-        $(".searchresults").append(`<div class='card' id='${i}' style = 'width: 12rem;'>
-                                    <img class='card-img-top' src='${thumb}' alt='Card image cap'>
-                                        <div style ='max-height:20px'>
-                                            <i class='fas fa-heart' id='${i}'></i>
+        var keys = Object.keys(favRests);
+        //rating display algorithm
+        var ratingDisp = {
+            avg: [],
+            stars: [],
+            half: [],
+            empty: [],
+        }
+
+        var dollarDiv = [];
+        var starDiv = [];
+
+        //font awesome star and dollar icons, favorite icons.
+        var dollar = "<i class='fab fa-bitcoin'></i>";
+        var fullStar = "<i class='fas fa-star'></i>";
+        var emptyStar = "<i class='far fa-star'></i>";
+        var halfStar = "<i class='fas fa-star-half-alt'></i>";
+        var solidHeart = "<i class='fas fa-heart'></i>";
+        var emptyHeart = "<i class='far fa-heart'></i>";
+
+        //create rating star divs
+        for (i = 0; i < keys.length; i++) {
+            var key = keys[i];
+            var temp = Math.floor(favRests[key].rating.aggregate_rating);
+            var temp2 = favRests[key].rating.aggregate_rating - temp;
+            var half;
+            var empty = 5 - temp;
+            if (temp2 > 0.71) {
+                temp++;
+                half = false;
+                empty--;
+            } else if (temp2 < 0.29) {
+                half = false;
+            } else {
+                half = true;
+                empty--;
+            }
+            ratingDisp.avg.push(favRests[key].rating.aggregate_rating);
+            ratingDisp.stars.push(temp);
+            ratingDisp.half.push(half);
+            ratingDisp.empty.push(empty);
+        }
+        for (i = 0; i < keys.length; i++) {
+            var temp = $("<div></div>");
+            for (j = 0; j < ratingDisp.stars[i]; j++) {
+                temp.append(fullStar);
+            }
+            if (ratingDisp.half[i]) {
+                temp.append(halfStar);
+            }
+            for (j = 0; j < ratingDisp.empty[i]; j++) {
+                temp.append(emptyStar);
+            }
+            starDiv.push(temp);
+        }
+
+        //create price dollar divs
+        for (i = 0; i < keys.length; i++) {
+            var key = keys[i];
+            var temp = $("<div></div>");
+            for (j = 0; j < favRests[key].priceRange; j++) {
+                temp.append(dollar);
+            }
+            dollarDiv.push(temp);
+        }
+
+        $(".searchresults").empty();
+        console.log(favRests);
+        var keys = Object.keys(favRests);
+        for (var i = 0; i < keys.length; i++) {
+            key = keys[i];
+            if (favRests[key].thumbnail) {
+                var thumb = favRests[key].thumbnail;
+            } else {
+                thumb = "assets/images/placehold.jpg"
+            }
+
+            $(".searchresults").append(`<div class='card' id='${i}' style = 'width: 12rem;'>
+                                        <img class='card-img-top' src='${thumb}' alt='Card image cap'>
+                                            <div style ='max-height:20px'>
+                                                <i class='fas fa-heart' id='${i}'></i>
+                                            </div>
+                                        <div class='card-body'>
+                                            <h5 class ='card-title' style='text-align:center;height:50px;overflow:hidden;'>${favRests[key].name}</h5>
+                                                <span>Price - ${dollarDiv[i][0].innerHTML}</span>
+                                                <br>
+                                                <div style='margin-top:10px;><${favRests[key].rating.aggregate_rating}&nbsp;&nbsp;${starDiv[i][0].innerHTML}</div>
+                                                <p class='card-text' style='margin-top:10px;font-size:12px;height:60px;'>${favRests[key].location.address}</p>
+                                                <a target='_blank' href='${favRests[key].link}' class='btn btn-primary' style='margin-left:15px;'>Zomato Page</a>
                                         </div>
-                                    <div class='card-body'>
-                                        <h5 class ='card-title' style='text-align:center;height:50px;overflow:hidden;'>${favRests[key].name}</h5>
-                                            <span>Price - ${dollarDiv[i][0].innerHTML}</span>
-                                            <br>
-                                            <div style='margin-top:10px;><${favRests[key].rating.aggregate_rating}&nbsp;&nbsp;${starDiv[i][0].innerHTML}</div>
-                                            <p class='card-text' style='margin-top:10px;font-size:12px;height:60px;'>${favRests[key].location.address}</p>
-                                            <a target='_blank' href='${favRests[key].link}' class='btn btn-primary' style='margin-left:15px;'>Zomato Page</a>
-                                    </div>
-                                </div>`)
+                                    </div>`)
 
-    };
-    $("#map").show();
-});
-  
+        }
+        $("#map").show();
+        for (var i = 0; i < markers.length; i++) {
+            markers[i].setMap(null);
+        }
+        markers = [];
+        var bounds = new google.maps.LatLngBounds();
+        infoWindow = new google.maps.InfoWindow();
+        for (i = 0; i < keys.length; i++) {
+            key = keys[i];
+            var marker = new google.maps.Marker({
+                position: new google.maps.LatLng(favRests[key].location.latitude, favRests[key].location.longitude),
+                map: map,
+            });
+            markers.push(marker);
+            bounds.extend(marker.position);
+            google.maps.event.addListener(marker, 'mouseover', (function (marker, i) {
+                return function () {
+                    infoWindow.setContent("<div style='color: black'><strong>" + favRests[key].name + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + dollarDiv[i][0].innerHTML + "</strong><hr><span>Rating: " + favRests[key].rating.aggregate_rating + "</span>&nbsp;&nbsp;&nbsp;<span>" + starDiv[i][0].innerHTML + "</span>&nbsp;&nbsp;&nbsp;<span>" + favRests[key].rating.votes + " Reviews</span><br><div style='margin-top:10px;'>" + favRests[key].location.address + '</div><br>' + '</div>');
+                    infoWindow.setOptions({
+                        maxWidth: 500
+                    });
+                    infoWindow.open(map, marker);
+                }
+            })(marker, i));
+            google.maps.event.addListener(marker, 'mouseout', function () {
+                infoWindow.close();
+            });
+        };
+        map.fitBounds(bounds);
+        google.maps.event.addDomListener(window, 'load', initialize);
+
+
+
+    })
+
+
     function initialize() {
         // create the geocoder
         geocoder = new google.maps.Geocoder();
@@ -319,7 +439,9 @@ $(document).ready(function () {
     $.ajax({
         url: queryURL + "categories",
         method: "GET",
-        headers: { "user-key": apiKey },
+        headers: {
+            "user-key": apiKey
+        },
     }).then(function (response) {
         category = response;
         category.categories.splice(3, 1);
@@ -379,14 +501,14 @@ $(document).ready(function () {
             $.ajax({
                 url: searchURL,
                 method: "GET",
-                headers: { 
-                    "user-key": apiKey 
+                headers: {
+                    "user-key": apiKey
                 },
             }).then(function (response) {
                 console.log(response);
                 pages = Math.ceil(response.results_found / 10);
-                if (pages > 10) { 
-                    pages = 10 
+                if (pages > 10) {
+                    pages = 10
                 };
                 if (response.results_shown < 11) {
                     displayNum = response.results_shown;
@@ -394,13 +516,10 @@ $(document).ready(function () {
                 for (i = 0; i < displayNum; i++) {
                     var temp = {
                         name: response.restaurants[i].restaurant.name,
-                        cuisine: response.restaurants[i].restaurant.cuisines,
                         location: response.restaurants[i].restaurant.location,
                         priceRange: response.restaurants[i].restaurant.price_range,
                         thumbnail: response.restaurants[i].restaurant.thumb,
                         link: response.restaurants[i].restaurant.url,
-                        menu: response.restaurants[i].restaurant.menu_url,
-                        photos: response.restaurants[i].restaurant.photos_url,
                         rating: response.restaurants[i].restaurant.user_rating,
                     }
                     restaurant.push(temp);
@@ -428,7 +547,7 @@ $(document).ready(function () {
             var dollarDiv = [];
             var starDiv = [];
 
-            //font awesome star, heart, and dollar icons
+            //font awesome star and dollar icons, favorite icons.
             var dollar = "<i class='fab fa-bitcoin'></i>";
             var fullStar = "<i class='fas fa-star'></i>";
             var emptyStar = "<i class='far fa-star'></i>";
@@ -455,9 +574,16 @@ $(document).ready(function () {
                         console.log(userDisplayName);
                         var ref = database.ref(userDisplayName);
                         ref.push(favRest);
+
                     }
+
+
                 }
             })
+
+
+
+
 
             //create rating star divs
             for (i = 0; i < restaurant.length; i++) {
@@ -510,7 +636,7 @@ $(document).ready(function () {
                 } else {
                     thumb = "assets/images/placehold.jpg"
                 }
-                $(".searchresults").append("<div class='card' style='width: 12rem;'><img class='card-img-top' src='" + thumb + "' alt='Card image cap'><div class='card-body'><h5 class='card-title' style='text-align:center;height:50px;overflow:hidden;'>" + restaurant[i].name + "</h5><span>Price - " + dollarDiv[i][0].innerHTML +"</span><br><div style='margin-top:10px;'>"+ restaurant[i].rating.aggregate_rating + "&nbsp;&nbsp;" + starDiv[i][0].innerHTML + "</div><p class='card-text' style='margin-top:10px;font-size:12px;height:60px;'>" + restaurant[i].location.address + "</p><a target='_blank' href='" + restaurant[i].link + "' class='btn btn-primary' style='margin-left:15px;'>Zomato Page</a></div></div>");
+                $(".searchresults").append("<div class='card' id='" + i + "' style='width: 12rem;'><img class='card-img-top' src='" + thumb + "' alt='Card image cap'><div style='max-height:20px'>" + "<i class='far fa-heart' id = '" + i + "'></i>" + "</div><div class='card-body'><h5 class='card-title' style='text-align:center;height:50px;overflow:hidden;'>" + restaurant[i].name + "</h5><span>Price - " + dollarDiv[i][0].innerHTML + "</span><br><div style='margin-top:10px;'>" + restaurant[i].rating.aggregate_rating + "&nbsp;&nbsp;" + starDiv[i][0].innerHTML + "</div><p class='card-text' style='margin-top:10px;font-size:12px;height:60px;'>" + restaurant[i].location.address + "</p><a target='_blank' href='" + restaurant[i].link + "' class='btn btn-primary' style='margin-left:15px;'>Zomato Page</a></div></div>");
             }
             $(".nextbutton").html("<button class='btn btn-outline-primary btn-lg shadow-sm previous' style='margin:auto;margin-top:30px;'>Previous Page</button><h4 style='margin:auto;margin-top:60px;'>Page " + parseInt(resultStart / 10 + 1) + " of " + pages + "</h4><button class='btn btn-outline-primary btn-lg shadow-sm next' style='margin:auto;margin-top:30px;'>Next Page</button>");
             $(".next").on("click", function () {
@@ -532,7 +658,9 @@ $(document).ready(function () {
                 $(this).css("font-size", "30px");
             })
 
+
             // put marker on map FROM GOOGLE MAPS API
+
             //clears markers on map
             function clearMap() {
                 for (var i = 0; i < markers.length; i++) {
@@ -541,6 +669,7 @@ $(document).ready(function () {
                 markers = [];
             }
 
+            //sets markers for currently displayed restaurants on map
             //sets markers for currently displayed restaurants on map
             clearMap();
             var bounds = new google.maps.LatLngBounds();
@@ -554,8 +683,10 @@ $(document).ready(function () {
                 bounds.extend(marker.position);
                 google.maps.event.addListener(marker, 'mouseover', (function (marker, i) {
                     return function () {
-                        infoWindow.setContent("<div style='color: black'><strong>" + restaurant[i].name +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+ dollarDiv[i][0].innerHTML+ "</strong><hr><span>Rating: " + restaurant[i].rating.aggregate_rating + "</span>&nbsp;&nbsp;&nbsp;<span>" + starDiv[i][0].innerHTML + "</span>&nbsp;&nbsp;&nbsp;<span>" + restaurant[i].rating.votes + " Reviews</span><br><div style='margin-top:10px;'>" + restaurant[i].location.address + '</div><br>' + '</div>');
-                        infoWindow.setOptions({ maxWidth: 500 });
+                        infoWindow.setContent("<div style='color: black'><strong>" + restaurant[i].name + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + dollarDiv[i][0].innerHTML + "</strong><hr><span>Rating: " + restaurant[i].rating.aggregate_rating + "</span>&nbsp;&nbsp;&nbsp;<span>" + starDiv[i][0].innerHTML + "</span>&nbsp;&nbsp;&nbsp;<span>" + restaurant[i].rating.votes + " Reviews</span><br><div style='margin-top:10px;'>" + restaurant[i].location.address + '</div><br>' + '</div>');
+                        infoWindow.setOptions({
+                            maxWidth: 500
+                        });
                         infoWindow.open(map, marker);
                     }
                 })(marker, i));
@@ -572,7 +703,9 @@ $(document).ready(function () {
             $.ajax({
                 url: "https://developers.zomato.com/api/v2.1/cities?q=" + city,
                 method: "GET",
-                headers: { "user-key": apiKey },
+                headers: {
+                    "user-key": apiKey
+                },
             }).then(function (cityResult) {
                 if (cityResult.location_suggestions.length > 1) {
                     $(".nextbutton").empty();
@@ -596,7 +729,9 @@ $(document).ready(function () {
 })
 
 function topFunction() {
-    var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || safari.pushNotification);
+    var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) {
+        return p.toString() === "[object SafariRemoteNotification]";
+    })(!window['safari'] || safari.pushNotification);
     if (isSafari) {
         document.body.scrollTop = 0; // For Safari
     } else {
