@@ -1,4 +1,3 @@
-
 $(document).ready(function () {
     //zomato search database
     var category
@@ -24,6 +23,7 @@ $(document).ready(function () {
     var signState = "";
     var userObj;
     var userDisplayName;
+    var favorites;
     var favRests;
     var counter = 0;
     console.log(counter)
@@ -117,7 +117,7 @@ $(document).ready(function () {
                     displayName: $("#txtUser").val().trim(),
 
                 })
-                
+
                 $(".pwRow").html("<h7 style='color:black;padding:0 0 10px 20px;'>Account Created!</h7>");
                 setTimeout(clickCancel, 2000);
             }
@@ -150,29 +150,30 @@ $(document).ready(function () {
             userObj = firebaseUser;
             console.log(userObj);
             setTimeout(signedIn, 500);
-            userDisplayName = userObj.displayName;
-            console.log(userDisplayName);
+            setTimeout(function () {
+                userDisplayName = userObj.displayName;
+                console.log(userDisplayName);
+                favorites = database.ref(userDisplayName);
+                favorites.on('value', gotData, errData);
+            }, 500);
+
             
-
-            var favorites = database.ref(userDisplayName);
-            favorites.on('value', gotData, errData);
-            // favorites.on('child_added', gotData, errData);
-
+              // favorites.on('child_added', gotData, errData);
             function gotData(data) {
                 //will return null if no data is saved
-                console.log(data.val()+ " <--expect null if no data is stored yet");
-                if(data.val() !== null){
-                favRests = data.val();
-                var keys = Object.keys(favRests);
-                console.log(keys);
-                for (var i = 0; i < keys.length; i++) {
-                    var k = keys[i];
-                    var restInfo = favRests[k].name;
-                    console.log(k, restInfo);
+                console.log(data.val() + " <--expect null if no data is stored yet");
+                if (data.val() !== null) {
+                    favRests = data.val();
+                    var keys = Object.keys(favRests);
+                    console.log(keys);
+                    for (var i = 0; i < keys.length; i++) {
+                        var k = keys[i];
+                        var restInfo = favRests[k].name;
+                        console.log(k, restInfo);
+                    }
+                    console.log(favRests);
+                    console.log(keys);
                 }
-                console.log(favRests);
-                console.log(keys);
-            }
             }
 
             function errData(err) {
