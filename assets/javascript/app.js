@@ -32,7 +32,7 @@ $(document).ready(function () {
 
     // Configure Firebase
     var config = {
-        apiKey: "AIzaSyBNrkLJnuk0Vbz0xyNdNkjPjc_uQsKebPQ",
+        apiKey: "AIzaSyCzJZPzf4uuz5kFNdgHJL5K_HkU01OTcUk",
         authDomain: "hyelp-1533266960440.firebaseapp.com",
         databaseURL: "https://hyelp-1533266960440.firebaseio.com",
         projectId: "hyelp-1533266960440",
